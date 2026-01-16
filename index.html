@@ -135,33 +135,45 @@
   </div>
 </div>
 
-  <div class="login-container">
-    <img src="C:\Users\PC\Downloads\Es6KO_yU4AAzXxq.jpg" alt="School Logo" class="logo">
+<div class="login-container">
+  <img src="images/Es6KO_yU4AAzXxq.jpg" alt="School Logo" class="logo">
 
-        <form action="file:///C:/Users/PC/Documents/Big%20Kenyon/suc.html"method="get" onsubmit="return checkLogin()">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" placeholder="Enter username" required>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter password" required>
+  <form onsubmit="return checkLogin()">
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter username" required>
 
-      <input type="submit" value="Login">
-    </form>
-  </div>
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter password" required>
+
+    <input type="submit" value="Login">
+
+    <!-- MESSAGE HERE -->
+    <p id="message" style="display:none; margin-top:12px; font-weight:bold;"></p>
+  </form>
+</div>
 
 <script>
-    function checkLogin() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
+  function checkLogin() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    const msg = document.getElementById("message");
 
-      if (user === 'admin' && pass === '1234') {
-        return true; // Go to success.html
-      } else {
-        window.location.href = "file:///C:/Users/PC/Documents/Big%20Kenyon/err.html"; // Redirect to error.html
-        return false;
-      }
+    if (user === "admin" && pass === "1234") {
+      msg.style.display = "block";
+      msg.style.color = "green";
+      msg.innerText = "✅ Login successful!";
+    } else {
+      msg.style.display = "block";
+      msg.style.color = "red";
+      msg.innerText = "❌ Invalid username or password";
     }
-  </script>
+
+    return false; // STOP page reload
+  }
+</script>
+
 
 
 </body>
 </html>
+
