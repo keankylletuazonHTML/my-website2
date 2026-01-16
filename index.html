@@ -147,7 +147,7 @@
 
     <input type="submit" value="Login">
 
-    <!-- MESSAGE HERE -->
+    <!-- MESSAGE -->
     <p id="message" style="display:none; margin-top:12px; font-weight:bold;"></p>
   </form>
 </div>
@@ -156,19 +156,24 @@
   function checkLogin() {
     const user = document.getElementById("username").value;
     const pass = document.getElementById("password").value;
-    const msg = document.getElementById("message");
+    const msg  = document.getElementById("message");
 
     if (user === "admin" && pass === "1234") {
       msg.style.display = "block";
       msg.style.color = "green";
-      msg.innerText = "✅ Login successful!";
+      msg.innerText = "✅ Login successful! Redirecting...";
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1500);
+
     } else {
       msg.style.display = "block";
       msg.style.color = "red";
       msg.innerText = "❌ Invalid username or password";
     }
 
-    return false; // STOP page reload
+    return false; // stop page refresh
   }
 </script>
 
@@ -176,4 +181,5 @@
 
 </body>
 </html>
+
 
