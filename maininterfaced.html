@@ -128,17 +128,26 @@ Enjoy using the cashier system!
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-/* DATA */
-const items=[
-{code:"A1",name:"Burger",price:35,stock:50},
-{code:"A2",name:"Soda",price:25,stock:40},
-{code:"A3",name:"Biscuits",price:15,stock:60},
-{code:"A4",name:"Meal",price:60,stock:30},
-{code:"A5",name:"Hotdog",price:30,stock:45},
-{code:"A6",name:"Fries",price:40,stock:35}
+/* ===== LOCAL STORAGE DATA ===== */
+const ITEMS_KEY = "canteen_items";
+const QUEUE_KEY = "canteen_queue";
+const ADMIN_HASH="81dc9bdb52d04dc20036dbd8313ed055";
+
+let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [
+  {code:"A1",name:"Burger",price:35,stock:50},
+  {code:"A2",name:"Soda",price:25,stock:40},
+  {code:"A3",name:"Biscuits",price:15,stock:60},
+  {code:"A4",name:"Meal",price:60,stock:30},
+  {code:"A5",name:"Hotdog",price:30,stock:45},
+  {code:"A6",name:"Fries",price:40,stock:35}
 ];
-const ADMIN_HASH="81dc9bdb52d04dc20036dbd8313ed055"; // MD5 of 1234
-let queue=[],selected=0,deleteIndex=null,clearRequested=false,adminTries=0;
+
+let queue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
+let selected=0,deleteIndex=null,clearRequested=false,adminTries=0;
+
+/* SAVE FUNCTIONS */
+function saveItems(){localStorage.setItem(ITEMS_KEY, JSON.stringify(items));}
+function saveQueue(){localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));}
 
 /* TUTORIAL */
 function closeTutorial(){document.getElementById("tutorial").style.display="none";}
@@ -164,6 +173,7 @@ if(item.stock===0){alert("Out of stock!"); return;}
 let existing=queue.find(q=>q.code===item.code);
 if(existing){if(existing.qty<item.stock) existing.qty++; else alert("Not enough stock!");}
 else queue.push({code:item.code,qty:1});
+saveQueue();
 renderQueue();
 }
 
@@ -190,8 +200,19 @@ function requestDelete(i){deleteIndex=i;clearRequested=false;document.getElement
 function confirmAdmin(){
 const pass=document.getElementById("adminPassInput").value;
 if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
-if(clearRequested){queue=[];renderQueue();document.getElementById("paymentInput").value="";updateChange();clearRequested=false;}
-else if(deleteIndex!==null){queue.splice(deleteIndex,1);renderQueue();}
+if(clearRequested){
+queue=[];
+saveQueue();
+renderQueue();
+document.getElementById("paymentInput").value="";
+updateChange();
+clearRequested=false;
+}
+else if(deleteIndex!==null){
+queue.splice(deleteIndex,1);
+saveQueue();
+renderQueue();
+}
 closeAdmin();adminTries=0;
 }else{adminTries++;alert("Wrong password!");if(adminTries>=3){alert("Too many attempts — system locked.");location.reload();}}
 }
@@ -199,35 +220,60 @@ function closeAdmin(){document.getElementById("adminModalBG").style.display="non
 
 /* PAYMENT & CHANGE */
 document.getElementById("paymentInput").addEventListener("input",updateChange);
-function updateChange(){const payment=Number(document.getElementById("paymentInput").value);const total=queueTotal();const change=payment-total;document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");}
+function updateChange(){
+const payment=Number(document.getElementById("paymentInput").value);
+const total=queueTotal();
+const change=payment-total;
+document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");
+}
 
 /* CLEAR QUEUE */
-document.getElementById("clearQueueBtn").onclick=()=>{clearRequested=true;deleteIndex=null;document.getElementById("adminModalBG").style.display="flex";}
+document.getElementById("clearQueueBtn").onclick=()=>{
+clearRequested=true;
+deleteIndex=null;
+document.getElementById("adminModalBG").style.display="flex";
+}
 
 /* CONFIRM SALE */
 document.getElementById("confirmOrdersBtn").onclick=()=>{
-if(queue.length===0){alert("Queue is empty!");return;}
-queue.forEach(order=>{const it=items.find(i=>i.code===order.code);it.stock-=order.qty;});
-alert("Sale recorded!");queue=[];renderQueue();document.getElementById("paymentInput").value="";updateChange();
+if(queue.length===0){alert("Queue is empty!"); return;}
+const payment=Number(document.getElementById("paymentInput").value);
+const total=queueTotal();
+if(payment<total){alert("Insufficient payment!"); return;}
+queue.forEach(order=>{const it=items.find(i=>i.code===order.code); it.stock-=order.qty;});
+saveItems();
+queue=[];
+saveQueue();
+renderQueue();
+document.getElementById("paymentInput").value="";
+updateChange();
+alert("Sale recorded!");
 };
 
 /* KEYBOARD */
 document.addEventListener("keydown",e=>{
-if(e.key==="ArrowRight"){selected=(selected+1)%items.length;renderItems();}
-if(e.key==="ArrowLeft"){selected=(selected-1+items.length)%items.length;renderItems();}
+if(e.key==="ArrowRight"){selected=(selected+1)%items.length; renderItems();}
+if(e.key==="ArrowLeft"){selected=(selected-1+items.length)%items.length; renderItems();}
 if(e.key==="Enter") addToQueue(selected);
-if(e.key==="Escape"){clearRequested=true;document.getElementById("adminModalBG").style.display="flex";}
+if(e.key==="Escape"){clearRequested=true; document.getElementById("adminModalBG").style.display="flex";}
 });
 
 /* INVENTORY */
 function openInventory(){
 const pass=prompt("Enter admin password:");
-if(CryptoJS.MD5(pass).toString()!==ADMIN_HASH){alert("Wrong password!");return;}
-const select=document.getElementById("inventorySelect");select.innerHTML="";
-items.forEach((item,i)=>{const opt=document.createElement("option");opt.value=i;opt.textContent=`${item.name} (Stock: ${item.stock})`;select.appendChild(opt);});
+if(CryptoJS.MD5(pass).toString()!==ADMIN_HASH){alert("Wrong password!"); return;}
+const select=document.getElementById("inventorySelect");
+select.innerHTML="";
+items.forEach((item,i)=>{const opt=document.createElement("option"); opt.value=i; opt.textContent=`${item.name} (Stock: ${item.stock})`; select.appendChild(opt);});
 document.getElementById("inventoryModalBG").style.display="flex";
 }
-function closeInventory(){document.getElementById("inventoryModalBG").style.display="none";document.getElementById("stockInput").value="";document.getElementById("priceInput").value="";document.getElementById("newProductName").value="";document.getElementById("newProductPrice").value="";}
+function closeInventory(){
+document.getElementById("inventoryModalBG").style.display="none";
+document.getElementById("stockInput").value="";
+document.getElementById("priceInput").value="";
+document.getElementById("newProductName").value="";
+document.getElementById("newProductPrice").value="";
+}
 function saveInventoryChanges(){
 const index=Number(document.getElementById("inventorySelect").value);
 const stockAdd=Number(document.getElementById("stockInput").value);
@@ -236,16 +282,17 @@ const newName=document.getElementById("newProductName").value;
 const newPrice=Number(document.getElementById("newProductPrice").value);
 if(stockAdd) items[index].stock+=stockAdd;
 if(priceNew) items[index].price=priceNew;
-if(newName&&newPrice){const code="A"+(items.length+1);items.push({code:code,name:newName,price:newPrice,stock:0});alert("New product added!");}
-alert("Inventory updated!");renderItems();closeInventory();
+if(newName&&newPrice){const code="A"+(items.length+1); items.push({code:code,name:newName,price:newPrice,stock:0}); alert("New product added!");}
+alert("Inventory updated!");
+saveItems();
+renderItems();
+closeInventory();
 }
 
 /* INITIAL LOAD */
-renderItems();renderQueue();
+renderItems();
+renderQueue();
 </script>
 
 </body>
 </html>
-
-
-
