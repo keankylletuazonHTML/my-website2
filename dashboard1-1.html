@@ -1,247 +1,257 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Employee Portal Dashboard</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#9aa4b2;--glass: rgba(255,255,255,0.03);}
-    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Helvetica,Arial,sans-serif;transition:all 0.25s ease;}
-    body{margin:0;background:linear-gradient(180deg,#071023 0%,#071826 100%);color:#e6eef6;min-height:100vh;}
-    .wrap{max-width:1100px;margin:28px auto;padding:20px;}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-    .brand{display:flex;gap:12px;align-items:center;}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700;color:#02122a;}
-    h1{font-size:18px;margin:0;}
-    p.sub{margin:0;color:var(--muted);font-size:13px;}
-    .top-right{display:flex;gap:12px;align-items:center;}
-    .clock{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600;}
-    main{display:grid;grid-template-columns:260px 1fr;gap:18px;}
-    /* sidebar */
-    .sidebar{background:var(--card);padding:14px;border-radius:12px;min-height:420px;}
-    .profile{display:flex;gap:12px;align-items:center;}
-    .avatar{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#94f9ff22,#ffd6f0);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;}
-    .name{font-weight:700;}
-    .role{font-size:13px;color:var(--muted);}
-    .menu{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
-    .menu button{background:transparent;border:0;color:var(--muted);padding:10px;border-radius:8px;text-align:left;cursor:pointer;font-weight:600;}
-    .menu button:hover{background:#071826;color:#fff;}
-    .menu button.active{background:#071826;border:1px solid rgba(255,255,255,0.03);color:#e6eef6;}
-    /* content */
-    .content{display:flex;flex-direction:column;gap:16px;}
-    .cards{display:flex;gap:12px;flex-wrap:wrap;}
-    .card{background:var(--card);padding:14px;border-radius:12px;min-width:160px;flex:1;box-shadow:0 6px 18px rgba(2,12,27,0.6);}
-    .card h3{margin:0 0 6px 0;font-size:12px;color:var(--muted);}
-    .card p{margin:0;font-size:20px;font-weight:700;}
-    .panel{background:var(--card);padding:14px;border-radius:12px;min-height:180px;position:relative;}
-    .panel h2{margin:0 0 10px 0;}
-    .back-btn{position:absolute;top:14px;right:14px;padding:6px 10px;background:var(--accent);color:#02122a;border:none;border-radius:6px;cursor:pointer;font-weight:600;}
-    .back-btn:hover{filter:brightness(1.2);}
-    table{width:100%;border-collapse:collapse;}
-    th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;}
-    .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#02122a;font-weight:700;cursor:pointer;}
-    .btn:hover{filter:brightness(1.2);}
-    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center;}
-    @media (max-width:900px){main{grid-template-columns:1fr;}.cards{flex-direction:column;}}
-    .hidden{display:none;}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Employee Portal Dashboard</title>
+
+<style>
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#06b6d4;
+  --muted:#9aa4b2;
+  --glass:rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#071023,#071826);
+  color:#e6eef6;
+}
+.wrap{max-width:1100px;margin:28px auto;padding:20px}
+header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:18px
+}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{
+  width:56px;height:56px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#02122a
+}
+.sub{font-size:13px;color:var(--muted)}
+.clock{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600}
+
+main{display:grid;grid-template-columns:260px 1fr;gap:18px}
+.sidebar{background:var(--card);padding:14px;border-radius:12px}
+.profile{display:flex;gap:12px;align-items:center}
+.avatar{
+  width:56px;height:56px;border-radius:10px;
+  background:#12203a;display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:var(--accent)
+}
+.menu{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+.menu button{
+  background:transparent;border:none;color:var(--muted);
+  padding:10px;border-radius:8px;text-align:left;
+  font-weight:600;cursor:pointer
+}
+.menu button.active,.menu button:hover{
+  background:#071826;color:#fff
+}
+
+.content{display:flex;flex-direction:column;gap:16px}
+.cards{display:flex;gap:12px;flex-wrap:wrap}
+.card{
+  background:var(--card);padding:14px;border-radius:12px;
+  flex:1;min-width:160px
+}
+.card h3{font-size:12px;color:var(--muted)}
+.card p{font-size:20px;font-weight:700}
+
+.panel{background:var(--card);padding:14px;border-radius:12px}
+.btn{
+  padding:8px 12px;border-radius:8px;border:none;
+  background:var(--accent);color:#02122a;font-weight:700;cursor:pointer
+}
+.btn:hover{filter:brightness(1.2)}
+.hidden{display:none}
+
+table{width:100%;border-collapse:collapse}
+th,td{
+  padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)
+}
+input{padding:8px;border-radius:6px;border:none}
+
+@media(max-width:900px){
+  main{grid-template-columns:1fr}
+  .cards{flex-direction:column}
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">GCC</div>
-        <div>
-          <h1>Gardner-College-Cainta Cashier Employee Portal</h1>
-          <p class="sub">Welcome back! Manage your day and tasks here.</p>
-        </div>
-      </div>
-      <div class="top-right">
-        <div class="clock" id="datetime">Loading...</div>
-      </div>
-    </header>
+<div class="wrap">
 
-    <main>
-      <aside class="sidebar">
-        <div class="profile">
-          <div class="avatar" id="avatar">A</div>
-          <div>
-            <div class="name" id="empName">Admin</div>
-            <div class="role" id="empRole">Cashier Staff</div>
-          </div>
-        </div>
+<header>
+  <div class="brand">
+    <div class="logo">GCC</div>
+    <div>
+      <h1>Gardner College Cashier Portal</h1>
+      <p class="sub">Employee Dashboard</p>
+    </div>
+  </div>
+  <div class="clock" id="datetime"></div>
+</header>
 
-        <nav class="menu">
-          <button class="active" data-section="dashboard">Dashboard</button>
-          <button data-section="attendance">Attendance</button>
-          <button data-section="pay">Pay</button>
-          <button id="logout">Time In/Out Reset</button>
-        </nav>
-      </aside>
-
-      <section class="content">
-        <!-- Dashboard Section -->
-        <div id="dashboardSection" class="section">
-          <div class="cards">
-            <div class="card">
-              <h3>Welcome</h3>
-              <p id="welcomeText">Hello, Admin</p>
-            </div>
-            <div class="card">
-              <h3>Today's Date</h3>
-              <p id="todayDate">—</p>
-            </div>
-            <div class="card">
-              <h3>Clock In</h3>
-              <p id="clockIn">Not yet</p>
-            </div>
-            <div class="card">
-              <h3>Clock Out</h3>
-              <p id="clockOut">Not yet</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Attendance Section -->
-        <div id="attendanceSection" class="section hidden">
-          <div class="panel">
-            <button class="back-btn" onclick="window.location.href='test';">Back to Cashier</button>
-            <h2>Attendance</h2>
-            <div style="display:flex;gap:8px;margin-bottom:10px">
-              <button class="btn" id="btnClockIn">Clock In</button>
-              <button class="btn" id="btnClockOut">Clock Out</button>
-            </div>
-            <table>
-              <thead>
-                <tr><th>Date</th><th>Time In</th><th>Time Out</th></tr>
-              </thead>
-              <tbody id="attTable"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Pay Section -->
-        <div id="paySection" class="section hidden">
-          <div class="panel">
-            <button class="back-btn" onclick="window.location.href='test';">Back to Cashier</button>
-            <h2>Salary Information</h2>
-            <p>Feature coming soon...</p>
-          </div>
-        </div>
-
-        <footer>Tip: Data are stored locally. Click "Time In/Out Reset" to clear stored data.</footer>
-      </section>
-    </main>
+<main>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="profile">
+    <div class="avatar">A</div>
+    <div>
+      <div class="name">Admin</div>
+      <div class="sub">Cashier Staff</div>
+    </div>
   </div>
 
-  <script>
-    const $ = id => document.getElementById(id);
+  <nav class="menu">
+    <button class="active" data-section="dashboard">Dashboard</button>
+    <button data-section="attendance">Attendance</button>
+    <button data-section="transactions">Transaction History</button>
+    <button data-section="income">Income Report</button>
+  </nav>
+</aside>
 
-    // Update clock and date
-    function updateDateTime() {
-      const now = new Date();
-      const dateStr = now.toLocaleDateString(undefined, { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-      const timeStr = now.toLocaleTimeString();
-      $('datetime').textContent = timeStr + ' • ' + dateStr;
-      $('todayDate').textContent = dateStr;
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+<!-- CONTENT -->
+<section class="content">
 
-    // Attendance system
-    function renderAttendance() {
-      const rows = JSON.parse(localStorage.getItem('ep_att') || '[]');
-      const tbody = $('attTable');
-      tbody.innerHTML = '';
-      rows.slice().reverse().forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.date}</td><td>${r.in || '—'}</td><td>${r.out || '—'}</td>`;
-        tbody.appendChild(tr);
-      });
-    }
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="section">
+  <div class="cards">
+    <div class="card"><h3>Today</h3><p id="todayDate"></p></div>
+    <div class="card"><h3>Clock In</h3><p id="clockIn">—</p></div>
+    <div class="card"><h3>Clock Out</h3><p id="clockOut">—</p></div>
+  </div>
+</div>
 
-    function todayKey() { return new Date().toISOString().slice(0, 10); }
+<!-- ATTENDANCE -->
+<div id="attendanceSection" class="section hidden">
+  <div class="panel">
+    <h2>Attendance</h2>
+    <button class="btn" id="btnClockIn">Clock In</button>
+    <button class="btn" id="btnClockOut">Clock Out</button>
+    <table>
+      <thead><tr><th>Date</th><th>In</th><th>Out</th></tr></thead>
+      <tbody id="attTable"></tbody>
+    </table>
+  </div>
+</div>
 
-    $('btnClockIn').onclick = () => {
-      const key = todayKey();
-      const rows = JSON.parse(localStorage.getItem('ep_att') || '[]');
-      const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
+<!-- TRANSACTIONS -->
+<div id="transactionsSection" class="section hidden">
+  <div class="panel">
+    <h2>Transaction History</h2>
+    <input id="desc" placeholder="Description">
+    <input id="amt" type="number" placeholder="Amount">
+    <button class="btn" id="addTrans">Add</button>
+    <table>
+      <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+      <tbody id="transTable"></tbody>
+    </table>
+  </div>
+</div>
 
-      let rec = rows.find(r => r.key === key);
+<!-- INCOME -->
+<div id="incomeSection" class="section hidden">
+  <div class="panel">
+    <h2>Income Report</h2>
+    <div class="cards">
+      <div class="card"><h3>Weekly</h3><p id="week">₱0</p></div>
+      <div class="card"><h3>Monthly</h3><p id="month">₱0</p></div>
+      <div class="card"><h3>Yearly</h3><p id="year">₱0</p></div>
+    </div>
+    <br>
+    <button class="btn" onclick="resetAll()">Reset All Data</button>
+  </div>
+</div>
 
-      if (!rec) {
-        rec = { key, date, in: time, out: '' };
-        rows.push(rec);
-        $('clockIn').textContent = time;
-        $('clockOut').textContent = 'Not yet';
-      } else if (!rec.in) {
-        rec.in = time;
-        $('clockIn').textContent = time;
-      } else {
-        alert("You've already clocked in today!");
-        return;
-      }
+</section>
+</main>
+</div>
 
-      localStorage.setItem('ep_att', JSON.stringify(rows));
-      renderAttendance();
-    };
+<script>
+const $=id=>document.getElementById(id);
 
-    $('btnClockOut').onclick = () => {
-      const key = todayKey();
-      const rows = JSON.parse(localStorage.getItem('ep_att') || '[]');
-      const rec = rows.find(r => r.key === key);
-      const now = new Date().toLocaleTimeString();
+/* CLOCK */
+setInterval(()=>{
+ const d=new Date();
+ $('datetime').textContent=d.toLocaleTimeString()+" • "+d.toLocaleDateString();
+ $('todayDate').textContent=d.toDateString();
+},1000);
 
-      if (!rec || !rec.in) {
-        alert("You need to clock in first!");
-        return;
-      }
+/* NAV */
+document.querySelectorAll('.menu button').forEach(b=>{
+ b.onclick=()=>{
+  document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+  b.classList.add('active');
+  document.getElementById(b.dataset.section+'Section').classList.remove('hidden');
+ }
+});
 
-      if (rec.out) {
-        alert("You’ve already clocked out today!");
-        return;
-      }
+/* ATTENDANCE */
+function key(){return new Date().toISOString().slice(0,10);}
+$('btnClockIn').onclick=()=>{
+ let a=JSON.parse(localStorage.att||'[]');
+ if(a.find(r=>r.key===key()))return alert("Already clocked in");
+ a.push({key:key(),date:new Date().toLocaleDateString(),in:new Date().toLocaleTimeString(),out:""});
+ localStorage.att=JSON.stringify(a);
+ renderAtt();
+};
+$('btnClockOut').onclick=()=>{
+ let a=JSON.parse(localStorage.att||'[]');
+ let r=a.find(r=>r.key===key());
+ if(!r)return alert("Clock in first");
+ r.out=new Date().toLocaleTimeString();
+ localStorage.att=JSON.stringify(a);
+ renderAtt();
+};
+function renderAtt(){
+ let a=JSON.parse(localStorage.att||'[]');
+ $('attTable').innerHTML=a.map(r=>`<tr><td>${r.date}</td><td>${r.in}</td><td>${r.out||'—'}</td></tr>`).join('');
+ if(a.at(-1)){ $('clockIn').textContent=a.at(-1).in; $('clockOut').textContent=a.at(-1).out||'—';}
+}
+renderAtt();
 
-      rec.out = now;
-      $('clockOut').textContent = now;
-      localStorage.setItem('ep_att', JSON.stringify(rows));
-      renderAttendance();
-    };
+/* TRANSACTIONS */
+$('addTrans').onclick=()=>{
+ let t=JSON.parse(localStorage.trans||'[]');
+ t.push({time:Date.now(),date:new Date().toLocaleDateString(),desc:desc.value,amt:+amt.value});
+ localStorage.trans=JSON.stringify(t);
+ renderTrans(); calcIncome();
+ desc.value=amt.value="";
+};
+function renderTrans(){
+ let t=JSON.parse(localStorage.trans||'[]');
+ $('transTable').innerHTML=t.map(x=>`<tr><td>${x.date}</td><td>${x.desc}</td><td>₱${x.amt}</td></tr>`).join('');
+}
+renderTrans();
 
-    renderAttendance();
+/* INCOME */
+function calcIncome(){
+ let t=JSON.parse(localStorage.trans||'[]');
+ let n=new Date(); let w=0,m=0,y=0;
+ t.forEach(x=>{
+  let d=new Date(x.time);
+  if((n-d)/864e5<=7)w+=x.amt;
+  if(d.getMonth()==n.getMonth())m+=x.amt;
+  if(d.getFullYear()==n.getFullYear())y+=x.amt;
+ });
+ week.textContent="₱"+w;
+ month.textContent="₱"+m;
+ year.textContent="₱"+y;
+}
+calcIncome();
 
-    // Section navigation
-    const buttons = document.querySelectorAll('.menu button[data-section]');
-    const sections = document.querySelectorAll('.section');
-    buttons.forEach(btn => {
-      btn.onclick = () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const sec = btn.getAttribute('data-section');
-        sections.forEach(s => s.classList.add('hidden'));
-        document.getElementById(sec + 'Section').classList.remove('hidden');
-      };
-    });
-
-    // Logout
-    $('logout').onclick = () => {
-      localStorage.clear();
-      location.reload();
-    };
-
-    // Restore today's attendance
-    (function () {
-      const key = todayKey();
-      const rows = JSON.parse(localStorage.getItem('ep_att') || '[]');
-      const rec = rows.find(r => r.key === key);
-      if (rec) {
-        if (rec.in) $('clockIn').textContent = rec.in;
-        if (rec.out) $('clockOut').textContent = rec.out;
-      }
-    })();
-  </script>
+/* RESET */
+function resetAll(){
+ if(confirm("Reset ALL data?")){
+  localStorage.clear();
+  location.reload();
+ }
+}
+</script>
 </body>
 </html>
-
