@@ -236,19 +236,38 @@ document.getElementById("adminModalBG").style.display="flex";
 
 /* CONFIRM SALE */
 document.getElementById("confirmOrdersBtn").onclick=()=>{
-if(queue.length===0){alert("Queue is empty!"); return;}
-const payment=Number(document.getElementById("paymentInput").value);
-const total=queueTotal();
-if(payment<total){alert("Insufficient payment!"); return;}
-queue.forEach(order=>{const it=items.find(i=>i.code===order.code); it.stock-=order.qty;});
-saveItems();
-queue=[];
-saveQueue();
-renderQueue();
-document.getElementById("paymentInput").value="";
-updateChange();
-alert("Sale recorded!");
+  if(queue.length===0){alert("Queue is empty!"); return;}
+
+  const payment = Number(document.getElementById("paymentInput").value);
+  const total = queueTotal();
+
+  if(payment < total){
+    alert("Insufficient payment!");
+    return;
+  }
+
+  // ✅ SEND DATA TO DASHBOARD
+  sendToDashboard(queue, total);
+
+  // bawas stock
+  queue.forEach(order=>{
+    const it = items.find(i=>i.code===order.code);
+    it.stock -= order.qty;
+  });
+
+  saveItems();
+
+  // reset queue
+  queue=[];
+  saveQueue();
+  renderQueue();
+
+  document.getElementById("paymentInput").value="";
+  updateChange();
+
+  alert("Sale recorded!");
 };
+
 
 /* KEYBOARD */
 document.addEventListener("keydown",e=>{
@@ -294,5 +313,28 @@ renderItems();
 renderQueue();
 </script>
 
+<script>
+/* ===== SEND TRANSACTION TO DASHBOARD ===== */
+function sendToDashboard(queue, totalAmount){
+  let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
+
+  // gawing isang description ang buong order
+  let desc = queue.map(q => {
+    let item = items.find(i => i.code === q.code);
+    return `${item.name} x${q.qty}`;
+  }).join(", ");
+
+  transactions.push({
+    time: Date.now(),
+    date: new Date().toLocaleDateString(),
+    desc: desc,
+    amt: totalAmount
+  });
+
+  localStorage.setItem("trans", JSON.stringify(transactions));
+}
+</script>
+
 </body>
 </html>
+
