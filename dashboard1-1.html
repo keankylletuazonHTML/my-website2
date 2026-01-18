@@ -11,7 +11,6 @@
   --card:#0b1220;
   --accent:#06b6d4;
   --muted:#9aa4b2;
-  --glass:rgba(255,255,255,0.03);
 }
 *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
 body{
@@ -19,160 +18,113 @@ body{
   background:linear-gradient(180deg,#071023,#071826);
   color:#e6eef6;
 }
+.hidden{display:none}
 .wrap{max-width:1100px;margin:28px auto;padding:20px}
-header{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:18px
+.card{background:var(--card);padding:20px;border-radius:12px}
+input,button{
+  padding:10px;border-radius:8px;border:none
 }
-.brand{display:flex;gap:12px;align-items:center}
+button{
+  background:var(--accent);
+  color:#02122a;
+  font-weight:700;
+  cursor:pointer
+}
+
+/* DASHBOARD STYLES */
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .logo{
   width:56px;height:56px;border-radius:12px;
   background:linear-gradient(135deg,var(--accent),#7c3aed);
   display:flex;align-items:center;justify-content:center;
   font-weight:800;color:#02122a
 }
-.sub{font-size:13px;color:var(--muted)}
-.clock{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600}
-
 main{display:grid;grid-template-columns:260px 1fr;gap:18px}
 .sidebar{background:var(--card);padding:14px;border-radius:12px}
-.profile{display:flex;gap:12px;align-items:center}
-.avatar{
-  width:56px;height:56px;border-radius:10px;
-  background:#12203a;display:flex;align-items:center;justify-content:center;
-  font-weight:700;color:var(--accent)
-}
-.menu{margin-top:18px;display:flex;flex-direction:column;gap:8px}
 .menu button{
-  background:transparent;border:none;color:var(--muted);
-  padding:10px;border-radius:8px;text-align:left;
-  font-weight:600;cursor:pointer
+  width:100%;margin-top:6px;background:none;color:#9aa4b2
 }
 .menu button.active,.menu button:hover{
-  background:#071826;color:#fff
+  background:#071826;color:white
 }
-
-.content{display:flex;flex-direction:column;gap:16px}
 .cards{display:flex;gap:12px;flex-wrap:wrap}
-.card{
-  background:var(--card);padding:14px;border-radius:12px;
-  flex:1;min-width:160px
+.cardBox{
+  background:var(--card);padding:14px;border-radius:12px;flex:1
 }
-.card h3{font-size:12px;color:var(--muted)}
-.card p{font-size:20px;font-weight:700}
-
-.panel{background:var(--card);padding:14px;border-radius:12px}
-.btn{
-  padding:8px 12px;border-radius:8px;border:none;
-  background:var(--accent);color:#02122a;font-weight:700;cursor:pointer
-}
-.btn:hover{filter:brightness(1.2)}
-.hidden{display:none}
-
 table{width:100%;border-collapse:collapse}
-th,td{
-  padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)
-}
-input{padding:8px;border-radius:6px;border:none}
-
-@media(max-width:900px){
-  main{grid-template-columns:1fr}
-  .cards{flex-direction:column}
-}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)}
 </style>
 </head>
 
 <body>
-<div class="wrap">
+
+<!-- LOGIN PAGE -->
+<div class="wrap" id="loginPage">
+  <div class="card" style="max-width:400px;margin:auto">
+    <h2>Employee Login</h2>
+    <input id="username" placeholder="Enter your name">
+    <br><br>
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="wrap hidden" id="dashboardPage">
 
 <header>
-  <div class="brand">
+  <div style="display:flex;gap:12px;align-items:center">
     <div class="logo">GCC</div>
     <div>
-      <h1>Gardner College Cashier Portal</h1>
-      <p class="sub">Employee Dashboard</p>
+      <h2>Employee Dashboard</h2>
+      <small id="empName"></small>
     </div>
   </div>
-  <div class="clock" id="datetime"></div>
+  <div id="datetime"></div>
 </header>
 
 <main>
-<!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="profile">
-    <div class="avatar">A</div>
-    <div>
-      <div class="name">Admin</div>
-      <div class="sub">Cashier Staff</div>
-    </div>
+  <div class="menu">
+    <button class="active">Dashboard</button>
+    <button onclick="logout()">Logout</button>
   </div>
-
-  <nav class="menu">
-    <button class="active" data-section="dashboard">Dashboard</button>
-    <button data-section="attendance">Attendance</button>
-    <button data-section="transactions">Transaction History</button>
-    <button data-section="income">Income Report</button>
-  </nav>
 </aside>
 
-<!-- CONTENT -->
-<section class="content">
-
-<!-- DASHBOARD -->
-<div id="dashboardSection" class="section">
+<section>
   <div class="cards">
-    <div class="card"><h3>Today</h3><p id="todayDate"></p></div>
-    <div class="card"><h3>Clock In</h3><p id="clockIn">—</p></div>
-    <div class="card"><h3>Clock Out</h3><p id="clockOut">—</p></div>
-  </div>
-</div>
-
-<!-- ATTENDANCE -->
-<div id="attendanceSection" class="section hidden">
-  <div class="panel">
-    <h2>Attendance</h2>
-    <button class="btn" id="btnClockIn">Clock In</button>
-    <button class="btn" id="btnClockOut">Clock Out</button>
-    <table>
-      <thead><tr><th>Date</th><th>In</th><th>Out</th></tr></thead>
-      <tbody id="attTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- TRANSACTIONS -->
-<div id="transactionsSection" class="section hidden">
-  <div class="panel">
-    <h2>Transaction History</h2>
-    <input id="desc" placeholder="Description">
-    <input id="amt" type="number" placeholder="Amount">
-    <button class="btn" id="addTrans">Add</button>
-    <table>
-      <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
-      <tbody id="transTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- INCOME -->
-<div id="incomeSection" class="section hidden">
-  <div class="panel">
-    <h2>Income Report</h2>
-    <div class="cards">
-      <div class="card"><h3>Weekly</h3><p id="week">₱0</p></div>
-      <div class="card"><h3>Monthly</h3><p id="month">₱0</p></div>
-      <div class="card"><h3>Yearly</h3><p id="year">₱0</p></div>
+    <div class="cardBox">
+      <h4>Date</h4>
+      <p id="todayDate"></p>
     </div>
-    <br>
-    <button class="btn" onclick="resetAll()">Reset All Data</button>
+    <div class="cardBox">
+      <h4>Clock In</h4>
+      <p id="clockIn">—</p>
+    </div>
+    <div class="cardBox">
+      <h4>Clock Out</h4>
+      <p id="clockOut">—</p>
+    </div>
   </div>
-</div>
 
+  <br>
+
+  <h3>Attendance History</h3>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Time In</th><th>Time Out</th></tr>
+    </thead>
+    <tbody id="attTable"></tbody>
+  </table>
 </section>
 </main>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
 
 /* CLOCK */
 setInterval(()=>{
@@ -181,77 +133,71 @@ setInterval(()=>{
  $('todayDate').textContent=d.toDateString();
 },1000);
 
-/* NAV */
-document.querySelectorAll('.menu button').forEach(b=>{
- b.onclick=()=>{
-  document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
-  b.classList.add('active');
-  document.getElementById(b.dataset.section+'Section').classList.remove('hidden');
+/* LOGIN = AUTO CLOCK IN */
+function login(){
+ const name=$('username').value;
+ if(!name) return alert("Enter name");
+
+ localStorage.currentUser=name;
+
+ let att=JSON.parse(localStorage.att||'[]');
+ if(!att.find(r=>r.key===todayKey())){
+   att.push({
+     key:todayKey(),
+     name,
+     date:new Date().toLocaleDateString(),
+     in:new Date().toLocaleTimeString(),
+     out:""
+   });
+   localStorage.att=JSON.stringify(att);
  }
-});
-
-/* ATTENDANCE */
-function key(){return new Date().toISOString().slice(0,10);}
-$('btnClockIn').onclick=()=>{
- let a=JSON.parse(localStorage.att||'[]');
- if(a.find(r=>r.key===key()))return alert("Already clocked in");
- a.push({key:key(),date:new Date().toLocaleDateString(),in:new Date().toLocaleTimeString(),out:""});
- localStorage.att=JSON.stringify(a);
- renderAtt();
-};
-$('btnClockOut').onclick=()=>{
- let a=JSON.parse(localStorage.att||'[]');
- let r=a.find(r=>r.key===key());
- if(!r)return alert("Clock in first");
- r.out=new Date().toLocaleTimeString();
- localStorage.att=JSON.stringify(a);
- renderAtt();
-};
-function renderAtt(){
- let a=JSON.parse(localStorage.att||'[]');
- $('attTable').innerHTML=a.map(r=>`<tr><td>${r.date}</td><td>${r.in}</td><td>${r.out||'—'}</td></tr>`).join('');
- if(a.at(-1)){ $('clockIn').textContent=a.at(-1).in; $('clockOut').textContent=a.at(-1).out||'—';}
+ loadDashboard();
 }
-renderAtt();
 
-/* TRANSACTIONS */
-$('addTrans').onclick=()=>{
- let t=JSON.parse(localStorage.trans||'[]');
- t.push({time:Date.now(),date:new Date().toLocaleDateString(),desc:desc.value,amt:+amt.value});
- localStorage.trans=JSON.stringify(t);
- renderTrans(); calcIncome();
- desc.value=amt.value="";
-};
-function renderTrans(){
- let t=JSON.parse(localStorage.trans||'[]');
- $('transTable').innerHTML=t.map(x=>`<tr><td>${x.date}</td><td>${x.desc}</td><td>₱${x.amt}</td></tr>`).join('');
+/* LOAD DASHBOARD */
+function loadDashboard(){
+ $('loginPage').classList.add('hidden');
+ $('dashboardPage').classList.remove('hidden');
+ $('empName').textContent=localStorage.currentUser;
+ renderAttendance();
 }
-renderTrans();
 
-/* INCOME */
-function calcIncome(){
- let t=JSON.parse(localStorage.trans||'[]');
- let n=new Date(); let w=0,m=0,y=0;
- t.forEach(x=>{
-  let d=new Date(x.time);
-  if((n-d)/864e5<=7)w+=x.amt;
-  if(d.getMonth()==n.getMonth())m+=x.amt;
-  if(d.getFullYear()==n.getFullYear())y+=x.amt;
+/* LOGOUT = AUTO CLOCK OUT */
+function logout(){
+ let att=JSON.parse(localStorage.att||'[]');
+ let rec=att.find(r=>r.key===todayKey());
+ if(rec && !rec.out){
+   rec.out=new Date().toLocaleTimeString();
+   localStorage.att=JSON.stringify(att);
+ }
+ localStorage.removeItem('currentUser');
+ location.reload();
+}
+
+/* ATTENDANCE DISPLAY */
+function renderAttendance(){
+ let att=JSON.parse(localStorage.att||'[]');
+ $('attTable').innerHTML="";
+ att.slice().reverse().forEach(r=>{
+   $('attTable').innerHTML+=`
+     <tr>
+       <td>${r.date}</td>
+       <td>${r.in}</td>
+       <td>${r.out||'—'}</td>
+     </tr>`;
  });
- week.textContent="₱"+w;
- month.textContent="₱"+m;
- year.textContent="₱"+y;
-}
-calcIncome();
-
-/* RESET */
-function resetAll(){
- if(confirm("Reset ALL data?")){
-  localStorage.clear();
-  location.reload();
+ let today=att.find(r=>r.key===todayKey());
+ if(today){
+   $('clockIn').textContent=today.in;
+   $('clockOut').textContent=today.out||'—';
  }
+}
+
+/* AUTO LOAD */
+if(localStorage.currentUser){
+ loadDashboard();
 }
 </script>
+
 </body>
 </html>
