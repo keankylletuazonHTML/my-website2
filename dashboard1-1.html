@@ -1,130 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Employee Portal Dashboard</title>
 
 <style>
 :root{
-  --bg:#0f1724;
-  --card:#0b1220;
-  --accent:#06b6d4;
-  --muted:#9aa4b2;
+ --card:#0b1220;--accent:#06b6d4;--muted:#9aa4b2;
 }
 *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-body{
-  margin:0;
-  background:linear-gradient(180deg,#071023,#071826);
-  color:#e6eef6;
-}
+body{margin:0;background:linear-gradient(180deg,#071023,#071826);color:#e6eef6}
 .hidden{display:none}
 .wrap{max-width:1100px;margin:28px auto;padding:20px}
-.card{background:var(--card);padding:20px;border-radius:12px}
-input,button{
-  padding:10px;border-radius:8px;border:none
-}
-button{
-  background:var(--accent);
-  color:#02122a;
-  font-weight:700;
-  cursor:pointer
-}
-
-/* DASHBOARD STYLES */
+.panel,.card{background:var(--card);padding:14px;border-radius:12px}
+button{background:var(--accent);border:none;padding:8px 12px;font-weight:700;border-radius:8px;cursor:pointer}
+input{padding:8px;border-radius:6px;border:none}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.logo{
-  width:56px;height:56px;border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),#7c3aed);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;color:#02122a
-}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;color:#02122a}
 main{display:grid;grid-template-columns:260px 1fr;gap:18px}
 .sidebar{background:var(--card);padding:14px;border-radius:12px}
-.menu button{
-  width:100%;margin-top:6px;background:none;color:#9aa4b2
-}
-.menu button.active,.menu button:hover{
-  background:#071826;color:white
-}
+.menu button{width:100%;background:none;color:var(--muted);text-align:left}
+.menu button.active,.menu button:hover{background:#071826;color:white}
 .cards{display:flex;gap:12px;flex-wrap:wrap}
-.cardBox{
-  background:var(--card);padding:14px;border-radius:12px;flex:1
-}
+.card{flex:1;min-width:160px}
 table{width:100%;border-collapse:collapse}
-th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.05)}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div class="wrap" id="loginPage">
-  <div class="card" style="max-width:400px;margin:auto">
-    <h2>Employee Login</h2>
-    <input id="username" placeholder="Enter your name">
-    <br><br>
-    <button onclick="login()">Login</button>
-  </div>
+ <div class="panel" style="max-width:400px;margin:auto">
+  <h2>Employee Login</h2>
+  <input id="username" placeholder="Enter name">
+  <br><br>
+  <button onclick="login()">Login</button>
+ </div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="wrap hidden" id="dashboardPage">
 
 <header>
-  <div style="display:flex;gap:12px;align-items:center">
-    <div class="logo">GCC</div>
-    <div>
-      <h2>Employee Dashboard</h2>
-      <small id="empName"></small>
-    </div>
+ <div style="display:flex;gap:12px;align-items:center">
+  <div class="logo">GCC</div>
+  <div>
+   <h2>Employee Portal</h2>
+   <small id="empName"></small>
   </div>
-  <div id="datetime"></div>
+ </div>
+ <div id="datetime"></div>
 </header>
 
 <main>
 <aside class="sidebar">
-  <div class="menu">
-    <button class="active">Dashboard</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+ <nav class="menu">
+  <button class="active" data-section="dashboard">Dashboard</button>
+  <button data-section="attendance">Attendance</button>
+  <button data-section="transactions">Transaction History</button>
+  <button data-section="income">Income Report</button>
+  <button onclick="logout()">Logout</button>
+ </nav>
 </aside>
 
 <section>
-  <div class="cards">
-    <div class="cardBox">
-      <h4>Date</h4>
-      <p id="todayDate"></p>
-    </div>
-    <div class="cardBox">
-      <h4>Clock In</h4>
-      <p id="clockIn">—</p>
-    </div>
-    <div class="cardBox">
-      <h4>Clock Out</h4>
-      <p id="clockOut">—</p>
-    </div>
-  </div>
 
-  <br>
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="section">
+ <div class="cards">
+  <div class="card"><h4>Date</h4><p id="todayDate"></p></div>
+  <div class="card"><h4>Clock In</h4><p id="clockIn">—</p></div>
+  <div class="card"><h4>Clock Out</h4><p id="clockOut">—</p></div>
+ </div>
+</div>
 
+<!-- ATTENDANCE -->
+<div id="attendanceSection" class="section hidden">
+ <div class="panel">
   <h3>Attendance History</h3>
   <table>
-    <thead>
-      <tr><th>Date</th><th>Time In</th><th>Time Out</th></tr>
-    </thead>
-    <tbody id="attTable"></tbody>
+   <thead><tr><th>Date</th><th>In</th><th>Out</th></tr></thead>
+   <tbody id="attTable"></tbody>
   </table>
+ </div>
+</div>
+
+<!-- TRANSACTIONS -->
+<div id="transactionsSection" class="section hidden">
+ <div class="panel">
+  <h3>Transaction History</h3>
+  <input id="desc" placeholder="Description">
+  <input id="amt" type="number" placeholder="Amount">
+  <button onclick="addTrans()">Add</button>
+  <table>
+   <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+   <tbody id="transTable"></tbody>
+  </table>
+ </div>
+</div>
+
+<!-- INCOME -->
+<div id="incomeSection" class="section hidden">
+ <div class="panel">
+  <h3>Income Report</h3>
+  <div class="cards">
+   <div class="card"><h4>Weekly</h4><p id="week">₱0</p></div>
+   <div class="card"><h4>Monthly</h4><p id="month">₱0</p></div>
+   <div class="card"><h4>Yearly</h4><p id="year">₱0</p></div>
+  </div>
+ </div>
+</div>
+
 </section>
 </main>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-
-function todayKey(){
-  return new Date().toISOString().slice(0,10);
-}
+const todayKey=()=>new Date().toISOString().slice(0,10);
 
 /* CLOCK */
 setInterval(()=>{
@@ -133,70 +129,86 @@ setInterval(()=>{
  $('todayDate').textContent=d.toDateString();
 },1000);
 
+/* NAV */
+document.querySelectorAll('.menu button[data-section]').forEach(b=>{
+ b.onclick=()=>{
+  document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+  b.classList.add('active');
+  $(b.dataset.section+'Section').classList.remove('hidden');
+ };
+});
+
 /* LOGIN = AUTO CLOCK IN */
 function login(){
  const name=$('username').value;
- if(!name) return alert("Enter name");
-
- localStorage.currentUser=name;
+ if(!name)return alert("Enter name");
+ localStorage.user=name;
 
  let att=JSON.parse(localStorage.att||'[]');
  if(!att.find(r=>r.key===todayKey())){
-   att.push({
-     key:todayKey(),
-     name,
-     date:new Date().toLocaleDateString(),
-     in:new Date().toLocaleTimeString(),
-     out:""
-   });
-   localStorage.att=JSON.stringify(att);
+  att.push({key:todayKey(),date:new Date().toLocaleDateString(),in:new Date().toLocaleTimeString(),out:""});
+  localStorage.att=JSON.stringify(att);
  }
- loadDashboard();
+ load();
 }
 
-/* LOAD DASHBOARD */
-function loadDashboard(){
+/* LOAD */
+function load(){
  $('loginPage').classList.add('hidden');
  $('dashboardPage').classList.remove('hidden');
- $('empName').textContent=localStorage.currentUser;
- renderAttendance();
+ $('empName').textContent=localStorage.user;
+ renderAtt(); renderTrans(); calcIncome();
 }
 
 /* LOGOUT = AUTO CLOCK OUT */
 function logout(){
  let att=JSON.parse(localStorage.att||'[]');
- let rec=att.find(r=>r.key===todayKey());
- if(rec && !rec.out){
-   rec.out=new Date().toLocaleTimeString();
-   localStorage.att=JSON.stringify(att);
- }
- localStorage.removeItem('currentUser');
+ let r=att.find(x=>x.key===todayKey());
+ if(r&&!r.out){r.out=new Date().toLocaleTimeString();}
+ localStorage.att=JSON.stringify(att);
+ localStorage.removeItem('user');
  location.reload();
 }
 
-/* ATTENDANCE DISPLAY */
-function renderAttendance(){
- let att=JSON.parse(localStorage.att||'[]');
- $('attTable').innerHTML="";
- att.slice().reverse().forEach(r=>{
-   $('attTable').innerHTML+=`
-     <tr>
-       <td>${r.date}</td>
-       <td>${r.in}</td>
-       <td>${r.out||'—'}</td>
-     </tr>`;
+/* ATTENDANCE */
+function renderAtt(){
+ let a=JSON.parse(localStorage.att||'[]');
+ $('attTable').innerHTML=a.map(r=>`<tr><td>${r.date}</td><td>${r.in}</td><td>${r.out||'—'}</td></tr>`).join('');
+ let t=a.find(r=>r.key===todayKey());
+ if(t){$('clockIn').textContent=t.in;$('clockOut').textContent=t.out||'—';}
+}
+
+/* TRANSACTIONS */
+function addTrans(){
+ let t=JSON.parse(localStorage.trans||'[]');
+ t.push({time:Date.now(),date:new Date().toLocaleDateString(),desc:desc.value,amt:+amt.value});
+ localStorage.trans=JSON.stringify(t);
+ desc.value=amt.value="";
+ renderTrans();calcIncome();
+}
+function renderTrans(){
+ let t=JSON.parse(localStorage.trans||'[]');
+ $('transTable').innerHTML=t.map(x=>`<tr><td>${x.date}</td><td>${x.desc}</td><td>₱${x.amt}</td></tr>`).join('');
+}
+
+/* INCOME */
+function calcIncome(){
+ let t=JSON.parse(localStorage.trans||'[]');
+ let n=new Date(),w=0,m=0,y=0;
+ t.forEach(x=>{
+  let d=new Date(x.time);
+  if((n-d)/864e5<=7)w+=x.amt;
+  if(d.getMonth()==n.getMonth())m+=x.amt;
+  if(d.getFullYear()==n.getFullYear())y+=x.amt;
  });
- let today=att.find(r=>r.key===todayKey());
- if(today){
-   $('clockIn').textContent=today.in;
-   $('clockOut').textContent=today.out||'—';
- }
+ week.textContent="₱"+w;
+ month.textContent="₱"+m;
+ year.textContent="₱"+y;
 }
 
 /* AUTO LOAD */
-if(localStorage.currentUser){
- loadDashboard();
-}
+if(localStorage.user)load();
 </script>
 
 </body>
