@@ -232,5 +232,38 @@ URL.revokeObjectURL(url);
 renderAttendance(); renderTransactions();
 setInterval(calcIncome,1000);
 </script>
+  
+/* ===== AUTO CLOCK IN ON LOGIN ===== */
+(function autoClockIn() {
+    const cashier = localStorage.getItem('cashierName');
+    if (!cashier) return; // no one logged in
+
+    let a = JSON.parse(localStorage.getItem('ep_att') || '[]');
+    const now = new Date();
+    const today = now.toISOString().slice(0,10);
+    const timeNow = now.toLocaleTimeString();
+    const dateNow = now.toLocaleDateString();
+
+    let rec = a.find(r => r.key === today);
+    if (!rec) {
+        // create new attendance for today
+        rec = { key: today, date: dateNow, in: timeNow, out: "" };
+        a.push(rec);
+    } else if (!rec.in) {
+        // if somehow in is empty, set it
+        rec.in = timeNow;
+    }
+    localStorage.setItem('ep_att', JSON.stringify(a));
+    renderAttendance();
+})();
+
+/* ===== UPDATE DASHBOARD IF ep_att CHANGES ===== */
+window.addEventListener('storage', function(event){
+    if (event.key === 'ep_att') {
+        renderAttendance();
+    }
+});
+
 </body>
 </html>
+
