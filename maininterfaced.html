@@ -534,9 +534,32 @@ document.addEventListener("keydown", (e) => {
     else if(e.key === "Delete") { deleteIndex = selected; clearRequested = false; document.getElementById("adminModalBG").style.display="flex"; }
 });
 
+/* INVENTORY */
+function openInventory(){
+const pass=prompt("Enter admin password:");
+if(CryptoJS.MD5(pass).toString()!==ADMIN_HASH){alert("Wrong password!");return;}
+const select=document.getElementById("inventorySelect");select.innerHTML="";
+items.forEach((item,i)=>{const opt=document.createElement("option");opt.value=i;opt.textContent=`${item.name} (Stock: ${item.stock})`;select.appendChild(opt);});
+document.getElementById("inventoryModalBG").style.display="flex";
+}
+function closeInventory(){document.getElementById("inventoryModalBG").style.display="none";document.getElementById("stockInput").value="";document.getElementById("priceInput").value="";document.getElementById("newProductName").value="";document.getElementById("newProductPrice").value="";}
+function saveInventoryChanges(){
+const index=Number(document.getElementById("inventorySelect").value);
+const stockAdd=Number(document.getElementById("stockInput").value);
+const priceNew=Number(document.getElementById("priceInput").value);
+const newName=document.getElementById("newProductName").value;
+const newPrice=Number(document.getElementById("newProductPrice").value);
+if(stockAdd) items[index].stock+=stockAdd;
+if(priceNew) items[index].price=priceNew;
+if(newName&&newPrice){const code="A"+(items.length+1);items.push({code:code,name:newName,price:newPrice,stock:0});alert("New product added!");}
+alert("Inventory updated!");renderItems();closeInventory();
+}
+
+
 /* ===== INITIAL LOAD ===== */
 renderItems(); renderQueue();
 </script>
 
 </body>
 </html>
+
