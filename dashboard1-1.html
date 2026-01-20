@@ -6,7 +6,7 @@
 <title>Employee Dashboard</title>
 <style>
 :root{
-  --bg:#0f1724; --card:#0b1220; --accent:#06b6d4; --muted:#9aa4b2; --glass:rgba(255,255,255,0.03);
+  --bg:#0f1724; --card:#0b1220; --accent:#06b6d4; --muted:#9aa4b2;
 }
 *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif;}
 body{margin:0;background:linear-gradient(180deg,#071023,#071826);color:#e6eef6;}
@@ -15,7 +15,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .brand{display:flex;gap:12px;align-items:center;}
 .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;color:#02122a;}
 .sub{font-size:13px;color:var(--muted);}
-.clock{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600;}
+.clock{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;font-weight:600;}
 main{display:grid;grid-template-columns:260px 1fr;gap:18px;}
 .sidebar{background:var(--card);padding:14px;border-radius:12px;}
 .profile{display:flex;gap:12px;align-items:center;}
@@ -28,15 +28,11 @@ main{display:grid;grid-template-columns:260px 1fr;gap:18px;}
 .card{background:var(--card);padding:14px;border-radius:12px;flex:1;min-width:160px;}
 .card h3{font-size:12px;color:var(--muted);}
 .card p{font-size:20px;font-weight:700;}
-.panel{background:var(--card);padding:14px;border-radius:12px;}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
 @media(max-width:900px){main{grid-template-columns:1fr}.cards{flex-direction:column;}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
 <header>
   <div class="brand">
     <div class="logo">GCC</div>
@@ -59,13 +55,10 @@ th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
   </div>
   <nav class="menu">
     <button class="active" data-section="dashboard">Dashboard</button>
-    <button data-section="transactions">Transaction History</button>
-    <button data-section="income">Income Report</button>
   </nav>
 </aside>
 
 <section class="content">
-<!-- DASHBOARD -->
 <div id="dashboardSection" class="section">
   <div class="cards">
     <div class="card"><h3>Today</h3><p id="todayDate"></p></div>
@@ -80,42 +73,27 @@ th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
 <script>
 const $ = id => document.getElementById(id);
 
-/* --- CLOCK --- */
+/* --- Clock --- */
 setInterval(()=>{
  const d = new Date();
  $('datetime').textContent = d.toLocaleTimeString() + ' • ' + d.toLocaleDateString();
  $('todayDate').textContent = d.toDateString();
 },1000);
 
-/* --- NAVIGATION --- */
-document.querySelectorAll('.menu button').forEach(b=>{
- b.onclick = ()=>{
-   document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
-   document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
-   b.classList.add('active');
-   document.getElementById(b.dataset.section+'Section').classList.remove('hidden');
- }
-});
-
-/* --- ATTENDANCE AUTOMATIC --- */
+/* --- Attendance --- */
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 
 function renderAttendance(){
-    const a = JSON.parse(localStorage.getItem('ep_att') || '[]');
-    const today = a.find(r => r.key === todayKey());
-    if(today){
-        $('clockIn').textContent = today.in || '—';
-        $('clockOut').textContent = today.out || '—';
-    } else {
-        $('clockIn').textContent = '—';
-        $('clockOut').textContent = '—';
-    }
+    let a = JSON.parse(localStorage.getItem('ep_att')||'[]');
+    const today = a.find(r=>r.key===todayKey());
+    $('clockIn').textContent = today?.in || '—';
+    $('clockOut').textContent = today?.out || '—';
 }
 
-// Auto record Clock In if user just logged in (from login page)
-(function autoClockInOnLoad(){
+// Auto Clock In if login happened
+(function autoClockIn(){
     const cashier = localStorage.getItem('cashierName');
-    if(!cashier) return; // no one logged in
+    if(!cashier) return; // No one logged in
 
     let a = JSON.parse(localStorage.getItem('ep_att')||'[]');
     let rec = a.find(r=>r.key===todayKey());
@@ -135,14 +113,13 @@ function renderAttendance(){
     renderAttendance();
 })();
 
-// Update when logout/main interface changes ep_att
+// Update dashboard if ep_att changes (e.g., logout)
 window.addEventListener('storage', (event)=>{
     if(event.key === 'ep_att'){
         renderAttendance();
     }
 });
 
-// Initial render
 renderAttendance();
 </script>
 </body>
