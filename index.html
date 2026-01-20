@@ -182,16 +182,29 @@ if (user === "admin" && pass === "1234") {
       localStorage.setItem("cashierName", user);
       localStorage.setItem("isLoggedIn", "true");
 
-      // ✅ CLOCK IN AUTOMATICALLY
-      clockIn(user);
+      // --- RECORD CLOCK IN ---
+      let a = JSON.parse(localStorage.getItem('ep_att') || '[]');
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      const timeNow = now.toLocaleTimeString();
+      const dateNow = now.toLocaleDateString();
 
-msg.style.display = "block";
-msg.style.color = "green";
-msg.innerText = "✅ Login successful! Redirecting...";
+      // check if record exists for today & cashier
+      let rec = a.find(r => r.key === today && r.cashier === user);
+      if(!rec){
+          rec = { key: today, date: dateNow, cashier: user, in: timeNow, out: "" };
+          a.push(rec);
+      } else if(!rec.in){
+          rec.in = timeNow;
+      }
+      localStorage.setItem('ep_att', JSON.stringify(a));
 
-setTimeout(() => {
-window.location.href = "maininterfaced.html";
-}, 1500);
+      msg.style.display = "block";
+      msg.style.color = "green";
+      msg.innerText = "✅ Login successful! Redirecting...";
+
+      setTimeout(() => { window.location.href = "maininterfaced.html"; }, 1500);
+} 
 
 } else {
 msg.style.display = "block";
@@ -205,3 +218,4 @@ return false; // stop page refresh
 
 </body>
 </html>
+
