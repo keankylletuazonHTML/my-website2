@@ -144,7 +144,7 @@ document.querySelectorAll('.menu button').forEach(b=>{
  }
 });
 
-/* --- ATTENDANCE AUTOMATIC FOR MULTIPLE SITES --- */
+/* --- ATTENDANCE AUTOMATIC --- */
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 
 function renderAttendance(){
@@ -154,18 +154,21 @@ function renderAttendance(){
   if(today){ 
     $('clockIn').textContent = today.in || '—'; 
     $('clockOut').textContent = today.out || '—'; 
+  } else {
+    $('clockIn').textContent = '—'; 
+    $('clockOut').textContent = '—'; 
   }
 }
 
-// Detect changes from Login/Logout sites
+// Detect changes from login/logout sites (works across tabs)
 window.addEventListener('storage', (event)=>{
   if(event.key === 'ep_att'){
-    renderAttendance(); // refresh automatically
+    renderAttendance();
   }
 });
 
-// Initial render
-renderAttendance();
+// Also render on page load (same tab)
+document.addEventListener('DOMContentLoaded', renderAttendance);
 
 /* --- TRANSACTIONS --- */
 function renderTransactions(filterCashier=''){
