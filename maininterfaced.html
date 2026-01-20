@@ -4,128 +4,318 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Canteen Cashier System</title>
+
 <style>
 /* ===== GENERAL ===== */
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',sans-serif;background:#0d1b3d;color:white;height:100vh;display:flex;flex-direction:column;}
-header{background:#09132d;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
-header img{height:80px;border:3px solid white;border-radius:6px;margin-right:15px;}
-.header-left{display:flex;align-items:center;}
-header h1{font-size:24px;font-weight:700;}
-.nav-btns a{background:white;color:#09132d;padding:8px 15px;border-radius:6px;font-weight:bold;text-decoration:none;margin-left:10px;}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family:'Segoe UI',sans-serif;
+    background:#0d1b3d;
+    color:white;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+header {
+    background:#09132d;
+    padding:12px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+header img {
+    height:80px;
+    border:3px solid white;
+    border-radius:6px;
+    margin-right:15px;
+}
+
+.header-left { display:flex; align-items:center; }
+
+header h1 { font-size:24px; font-weight:700; }
+
+.nav-btns a {
+    background:white;
+    color:#09132d;
+    padding:8px 15px;
+    border-radius:6px;
+    font-weight:bold;
+    text-decoration:none;
+    margin-left:10px;
+}
+
 /* ===== MAIN LAYOUT ===== */
-.pos-container{flex:1;display:grid;grid-template-columns:2fr 1.2fr;padding:20px;gap:20px;}
-.panel{background:white;color:black;border-radius:12px;padding:20px;display:flex;flex-direction:column;}
-.panel h2{background:#0a1533;color:white;padding:12px;border-radius:6px;text-align:center;margin-bottom:15px;}
-.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
-.item-btn{padding:22px 12px;font-size:17px;font-weight:bold;background:#1e3fa1;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s;}
-.item-btn:hover{background:#2a4fcc;}
-.item-btn.selected{background:#142b69;box-shadow:0 0 5px #06122e;}
-table{width:100%;border-collapse:collapse;font-size:15px;}
-th,td{border-bottom:1px solid #ddd;padding:6px;text-align:center;}
-button#confirmOrdersBtn{background:#007b3a;color:white;margin-top:10px;padding:10px;border-radius:6px;border:none;cursor:pointer;}
-button#clearQueueBtn{background:#b32828;color:white;margin-top:10px;padding:10px;border-radius:6px;border:none;cursor:pointer;}
-#queueTotal{margin-top:10px;font-weight:bold;}
-input{padding:8px;margin-bottom:8px;width:100%;}
+.pos-container {
+    flex:1;
+    display:grid;
+    grid-template-columns:2fr 1.2fr;
+    padding:20px;
+    gap:20px;
+}
+
+.panel {
+    background:white;
+    color:black;
+    border-radius:12px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+.panel h2 {
+    background:#0a1533;
+    color:white;
+    padding:12px;
+    border-radius:6px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.item-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:14px;
+}
+
+.item-btn {
+    padding:22px 12px;
+    font-size:17px;
+    font-weight:bold;
+    background:#1e3fa1;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.item-btn:hover { background:#2a4fcc; }
+.item-btn.selected { background:#142b69; box-shadow:0 0 5px #06122e; }
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:15px;
+}
+
+th, td {
+    border-bottom:1px solid #ddd;
+    padding:6px;
+    text-align:center;
+}
+
+button#confirmOrdersBtn {
+    background:#007b3a;
+    color:white;
+    margin-top:10px;
+    padding:10px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+}
+
+button#clearQueueBtn {
+    background:#b32828;
+    color:white;
+    margin-top:10px;
+    padding:10px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+}
+
+#queueTotal { margin-top:10px; font-weight:bold; }
+
+input { padding:8px; margin-bottom:8px; width:100%; }
+
 /* ===== TUTORIAL POPUP ===== */
-#tutorial{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;justify-content:center;align-items:center;}
-#tutorial-box{background:white;color:black;padding:25px;width:380px;border-radius:12px;text-align:center;animation:pop 0.25s ease-out;}
-@keyframes pop{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
-#tutorial button{margin-top:15px;padding:10px;width:100%;background:#0d1b3d;color:white;border:0;border-radius:6px;cursor:pointer;}
+#tutorial {
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.65);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#tutorial-box {
+    background:white;
+    color:black;
+    padding:25px;
+    width:380px;
+    border-radius:12px;
+    text-align:center;
+    animation:pop 0.25s ease-out;
+    z-index:10000;
+}
+
+@keyframes pop {
+    from { transform:scale(0.8); opacity:0; }
+    to { transform:scale(1); opacity:1; }
+}
+
+#tutorial button {
+    margin-top:15px;
+    padding:10px;
+    width:100%;
+    background:#0d1b3d;
+    color:white;
+    border:0;
+    border-radius:6px;
+    cursor:pointer;
+}
+
 /* ===== ADMIN MODAL ===== */
-#adminModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;}
-#adminModal{background:white;color:black;padding:25px;width:300px;border-radius:8px;text-align:center;}
-#adminModal input{width:90%;margin:12px 0;padding:8px;font-size:14px;}
-#adminModal button{padding:8px 10px;width:100%;margin-top:10px;cursor:pointer;}
+#adminModalBG {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+#adminModal {
+    background:white;
+    color:black;
+    padding:25px;
+    width:300px;
+    border-radius:8px;
+    text-align:center;
+}
+
+#adminModal input { width:90%; margin:12px 0; padding:8px; font-size:14px; }
+#adminModal button { padding:8px 10px; width:100%; margin-top:10px; cursor:pointer; }
+
 /* ===== INVENTORY BUTTON & MODAL ===== */
-#inventoryBtn{position:fixed;bottom:25px;right:25px;background:#ffb200;color:black;font-weight:bold;padding:15px 20px;border-radius:50px;border:none;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4);z-index:9999;}
-#inventoryModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:99999;}
-#inventoryModal{background:white;color:black;padding:20px;width:400px;border-radius:10px;}
-#inventoryModal h2{margin-bottom:10px;}
-#inventoryModal input,#inventoryModal select{width:90%;padding:7px;margin:6px 0;}
-#inventoryModal button{padding:8px 10px;width:100%;margin-top:10px;background:#0d1b3d;color:white;border-radius:6px;border:none;cursor:pointer;}
+#inventoryBtn {
+    position:fixed;
+    bottom:25px; right:25px;
+    background:#ffb200;
+    color:black;
+    font-weight:bold;
+    padding:15px 20px;
+    border-radius:50px;
+    border:none;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    z-index:9999;
+}
+
+#inventoryModalBG {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+#inventoryModal {
+    background:white;
+    color:black;
+    padding:20px;
+    width:400px;
+    border-radius:10px;
+}
+
+#inventoryModal h2 { margin-bottom:10px; }
+#inventoryModal input, #inventoryModal select { width:90%; padding:7px; margin:6px 0; }
+#inventoryModal button { padding:8px 10px; width:100%; margin-top:10px; background:#0d1b3d; color:white; border-radius:6px; border:none; cursor:pointer; }
 </style>
 </head>
-<body>
 
+<body>
 <header>
-<div class="header-left">
-<img src="logocashier.jpg" alt="Logo">
-<h1>Canteen Cashier System</h1>
-</div>
-<div class="nav-btns">
-<a href="dashboard1-1.html">Dashboard</a>
-<a href="index.html">Logout</a>
-</div>
+    <div class="header-left">
+        <img src="logocashier.jpg" alt="Logo">
+        <h1>Canteen Cashier System</h1>
+    </div>
+    <div class="nav-btns">
+        <a href="dashboard1-1.html">Dashboard</a>
+        <a href="index.html">Logout</a>
+    </div>
 </header>
 
 <!-- TUTORIAL -->
 <div id="tutorial">
-<div id="tutorial-box">
-<h2>Welcome!</h2>
-<p style="font-size:15px; margin-top:10px;">
-👉 Tap products to increase quantity<br>
-👉 ENTER = Add item<br>
-👉 ← → = Select product<br>
-👉 ESC = Clear queue (admin)<br>
-👉 Delete = Remove item (admin)<br><br>
-Enjoy using the cashier system!
-</p>
-<button onclick="closeTutorial()">Got it!</button>
-</div>
+    <div id="tutorial-box">
+        <h2>Welcome!</h2>
+        <p style="font-size:15px; margin-top:10px;">
+            👉 Tap products to increase quantity<br>
+            👉 ENTER = Add item<br>
+            👉 ← → = Select product<br>
+            👉 ESC = Clear queue (admin)<br>
+            👉 Delete = Remove item (admin)<br><br>
+            Enjoy using the cashier system!
+        </p>
+        <button onclick="closeTutorial()">Got it!</button>
+    </div>
 </div>
 
 <!-- ADMIN PASSWORD MODAL -->
 <div id="adminModalBG">
-<div id="adminModal">
-<h3>Admin Password</h3>
-<input type="password" id="adminPassInput" placeholder="Enter password">
-<button onclick="confirmAdmin()">Confirm</button>
-<button onclick="closeAdmin()" style="background:#b32828;color:white;margin-top:10px;padding:8px;width:100%;">Cancel</button>
-</div>
+    <div id="adminModal">
+        <h3>Admin Password</h3>
+        <input type="password" id="adminPassInput" placeholder="Enter password">
+        <button onclick="confirmAdmin()">Confirm</button>
+        <button onclick="closeAdmin()" style="background:#b32828;color:white;margin-top:10px;padding:8px;width:100%;">Cancel</button>
+    </div>
 </div>
 
 <!-- INVENTORY MODAL -->
 <div id="inventoryModalBG">
-<div id="inventoryModal">
-<h2>Inventory Management</h2>
-<select id="inventorySelect"></select>
-<input type="number" id="stockInput" placeholder="Add Stock (+)">
-<input type="number" id="priceInput" placeholder="New Price (optional)">
-<input type="text" id="newProductName" placeholder="Add New Product Name">
-<input type="number" id="newProductPrice" placeholder="New Product Price">
-<button onclick="saveInventoryChanges()">Save Changes</button>
-<button onclick="closeInventory()" style="background:#b32828;">Close</button>
-</div>
+    <div id="inventoryModal">
+        <h2>Inventory Management</h2>
+        <select id="inventorySelect"></select>
+        <input type="number" id="stockInput" placeholder="Add Stock (+)">
+        <input type="number" id="priceInput" placeholder="New Price (optional)">
+        <input type="text" id="newProductName" placeholder="Add New Product Name">
+        <input type="number" id="newProductPrice" placeholder="New Product Price">
+        <button onclick="saveInventoryChanges()">Save Changes</button>
+        <button onclick="closeInventory()" style="background:#b32828;">Close</button>
+    </div>
 </div>
 
 <!-- FLOATING INVENTORY BUTTON -->
 <button id="inventoryBtn" onclick="openInventory()">📦 Inventory</button>
 
 <div class="pos-container">
-<!-- PRODUCT PANEL -->
-<div class="panel">
-<h2>Food Items</h2>
-<div class="item-grid" id="itemButtons"></div>
-</div>
+    <!-- PRODUCT PANEL -->
+    <div class="panel">
+        <h2>Food Items</h2>
+        <div class="item-grid" id="itemButtons"></div>
+    </div>
 
-<!-- QUEUE PANEL -->
-<div class="panel">
-<h2>Order Queue</h2>
-<table>
-<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th>Del</th></tr></thead>
-<tbody id="queue-body"></tbody>
-</table>
-<div class="total" id="queueTotal">Queue Total: ₱0.00</div>
-<h3 style="margin-top:15px;">Payment:</h3>
-<input type="number" id="paymentInput" placeholder="Customer payment">
-<h3>Change:</h3>
-<div id="changeDisplay">₱0.00</div>
-<button id="confirmOrdersBtn">Confirm Sale</button>
-<button id="clearQueueBtn">Clear Queue</button>
+    <!-- QUEUE PANEL -->
+    <div class="panel">
+        <h2>Order Queue</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Del</th>
+                </tr>
+            </thead>
+            <tbody id="queue-body"></tbody>
+        </table>
+        <div class="total" id="queueTotal">Queue Total: ₱0.00</div>
+        <h3 style="margin-top:15px;">Payment:</h3>
+        <input type="number" id="paymentInput" placeholder="Customer payment">
+        <h3>Change:</h3>
+        <div id="changeDisplay">₱0.00</div>
+        <button id="confirmOrdersBtn">Confirm Sale</button>
+        <button id="clearQueueBtn">Clear Queue</button>
+    </div>
 </div>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
 /* ===== INITIAL SETUP ===== */
@@ -270,6 +460,7 @@ renderItems(); renderQueue();
 
 </body>
 </html>
+
 
 
 
