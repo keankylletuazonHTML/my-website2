@@ -158,7 +158,12 @@
     const pass = document.getElementById("password").value;
     const msg  = document.getElementById("message");
 
-    if (user === "Admin" && pass === "1234") {
+    if (user === "admin" && pass === "1234") {
+
+      // ✅ SAVE LOGIN INFO HERE
+      localStorage.setItem("cashierName", user);
+      localStorage.setItem("isLoggedIn", "true");
+
       msg.style.display = "block";
       msg.style.color = "green";
       msg.innerText = "✅ Login successful! Redirecting...";
@@ -180,8 +185,10 @@
 
 
 
+
 </body>
 </html>
+
 
 
 
