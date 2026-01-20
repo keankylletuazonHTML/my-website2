@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login Page</title>
 <style>
+/* ===== KEEP ALL YOUR EXISTING CSS ===== */
 body {
 font-family: Arial, sans-serif;
 background-image: url('https://t3.ftcdn.net/jpg/03/91/46/10/360_F_391461057_5P0BOWl4lY442Zoo9rzEeJU0S2c1WDZR.jpg');
@@ -16,7 +17,6 @@ align-items: center;
 height: 100vh;
 margin: 0;
 padding-right: 180px;
-
 }
 
 body::before {
@@ -153,6 +153,25 @@ style="width:280px; margin-bottom:10px; border-radius: 8px; border:7px solid whi
 </div>
 
 <script>
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
+function clockIn(username){
+  let a = JSON.parse(localStorage.getItem('ep_att') || '[]');
+  const now = new Date();
+  const date = now.toLocaleDateString();
+  const time = now.toLocaleTimeString();
+  let rec = a.find(r => r.key === todayKey());
+  if(!rec){ 
+    rec = {key: todayKey(), date, in: time, out: ""};
+    a.push(rec);
+  } else if(!rec.in){
+    rec.in = time;
+  }
+  localStorage.setItem('ep_att', JSON.stringify(a));
+  // optional: store last logged-in user
+  localStorage.setItem('user', username);
+}
+
 function checkLogin() {
 const user = document.getElementById("username").value;
 const pass = document.getElementById("password").value;
@@ -162,6 +181,10 @@ if (user === "admin" && pass === "1234") {
       // ✅ SAVE LOGIN INFO
       localStorage.setItem("cashierName", user);
       localStorage.setItem("isLoggedIn", "true");
+
+      // ✅ CLOCK IN AUTOMATICALLY
+      clockIn(user);
+
 msg.style.display = "block";
 msg.style.color = "green";
 msg.innerText = "✅ Login successful! Redirecting...";
@@ -180,11 +203,5 @@ return false; // stop page refresh
 }
 </script>
 
-
-
 </body>
 </html>
-
-
-
-
