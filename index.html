@@ -51,30 +51,26 @@ function checkLogin() {
   const pass = document.getElementById("password").value;
   const msg = document.getElementById("message");
 
-  // Example credentials
-  const users = [
-    {name:"Carmel", pass:"Ramos"},
-    {name:"Lance", pass:"1234"}
-  ];
+  if (user === "Carmel" && pass === "Ramos") {
 
-  const valid = users.find(u=>u.name===user && u.pass===pass);
+  // ✅ SAVE LOGIN INFO HERE
+  localStorage.setItem("cashierName", user);
+  localStorage.setItem("isLoggedIn", "true");
 
-  if(valid){
-    localStorage.setItem("cashierName", user);
-    localStorage.setItem("isLoggedIn", "true");
+  // ✅ RECORD CLOCK IN
+  let attendance = JSON.parse(localStorage.getItem("attendance") || "[]");
+  const today = new Date().toDateString();
+  if (!attendance.find(a => a.cashier === user && new Date(a.loginTime).toDateString() === today)) {
+    attendance.push({cashier: user, loginTime: new Date(), logoutTime: null});
+    localStorage.setItem("attendance", JSON.stringify(attendance));
+  }
 
-    // Attendance - Clock In
-    let attendance = JSON.parse(localStorage.getItem("attendance")||"[]");
-    const today = new Date().toDateString();
-    if(!attendance.find(a=>a.cashier===user && new Date(a.loginTime).toDateString()===today)){
-      attendance.push({cashier:user, loginTime:new Date(), logoutTime:null});
-      localStorage.setItem("attendance", JSON.stringify(attendance));
-    }
-
-    msg.style.display="block";
-    msg.style.color="green";
-    msg.innerText="✅ Login successful! Redirecting...";
-    setTimeout(()=>{ window.location.href="maininterfaced.html"; }, 1200);
+  msg.style.display = "block";
+  msg.style.color = "green";
+  msg.innerText = "✅ Login successful! Redirecting...";
+  setTimeout(() => {
+    window.location.href = "maininterfaced.html";
+  }, 1500);
   } else {
     msg.style.display="block";
     msg.style.color="red";
@@ -86,3 +82,4 @@ function checkLogin() {
 
 </body>
 </html>
+
