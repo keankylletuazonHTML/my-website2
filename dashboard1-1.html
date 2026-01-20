@@ -231,8 +231,7 @@ URL.revokeObjectURL(url);
 /* --- INIT --- */
 renderAttendance(); renderTransactions();
 setInterval(calcIncome,1000);
-</script>
-  
+
 /* ===== AUTO CLOCK IN ON LOGIN ===== */
 (function autoClockIn() {
     const cashier = localStorage.getItem('cashierName');
@@ -263,7 +262,10 @@ window.addEventListener('storage', function(event){
         renderAttendance();
     }
 });
+</script>
+  
 
 </body>
 </html>
+
 
