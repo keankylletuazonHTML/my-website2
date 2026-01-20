@@ -308,7 +308,7 @@ renderItems();
 closeInventory();
 }
 
-
+<script>
 function sendToDashboard(queue, totalAmount){
   let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
 
@@ -330,13 +330,16 @@ function sendToDashboard(queue, totalAmount){
   localStorage.setItem("trans", JSON.stringify(transactions));
 }
 
+
 /* INITIAL LOAD */
 renderItems();
 renderQueue();
+</script>
 
 
 </body>
 </html>
+
 
 
 
