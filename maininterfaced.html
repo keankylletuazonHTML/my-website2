@@ -313,12 +313,11 @@ renderItems();
 renderQueue();
 </script>
 
-<script>
-/* ===== SEND TRANSACTION TO DASHBOARD ===== */
 function sendToDashboard(queue, totalAmount){
   let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
 
-  // gawing isang description ang buong order
+  const cashierName = localStorage.getItem("cashierName") || "Unknown";
+
   let desc = queue.map(q => {
     let item = items.find(i => i.code === q.code);
     return `${item.name} x${q.qty}`;
@@ -328,13 +327,15 @@ function sendToDashboard(queue, totalAmount){
     time: Date.now(),
     date: new Date().toLocaleDateString(),
     desc: desc,
-    amt: totalAmount
+    amt: totalAmount,
+    cashier: cashierName // ✅ FIX
   });
 
   localStorage.setItem("trans", JSON.stringify(transactions));
 }
-</script>
+
 
 </body>
 </html>
+
 
