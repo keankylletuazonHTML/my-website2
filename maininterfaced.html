@@ -470,31 +470,24 @@ function logoutCashier(){
     const cashier = localStorage.getItem("cashierName") || "Unknown";
     const todayKey = new Date().toISOString().slice(0,10);
 
-    // --- Update dashboard attendance ---
     let ep_att = JSON.parse(localStorage.getItem('ep_att') || '[]');
-    
-    // ✅ Find record for TODAY and CURRENT CASHIER
     let rec = ep_att.find(r => r.key === todayKey && r.cashier === cashier);
 
     const now = new Date().toLocaleTimeString();
     const date = new Date().toLocaleDateString();
 
     if(!rec){
-        // If no record yet today, create one with in empty and out now
         rec = { key: todayKey, date: date, cashier: cashier, in: "", out: now };
         ep_att.push(rec);
     } else {
-        // If record exists, just update Clock Out
         rec.out = now;
     }
 
     localStorage.setItem('ep_att', JSON.stringify(ep_att));
 
-    // --- Clear login info ---
     localStorage.removeItem("cashierName");
     localStorage.removeItem("isLoggedIn");
 
-    // Redirect to login
     window.location.href="index.html";
 }
 
@@ -560,6 +553,7 @@ renderItems(); renderQueue();
 
 </body>
 </html>
+
 
 
 
