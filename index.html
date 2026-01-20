@@ -158,10 +158,7 @@
     const pass = document.getElementById("password").value;
     const msg  = document.getElementById("message");
 
-    if (user === "admin" && pass === "1234") {
-      // ✅ SAVE LOGIN INFO
-      localStorage.setItem("cashierName", user);
-      localStorage.setItem("isLoggedIn", "true");
+    if (user === "Admin" && pass === "1234") {
       msg.style.display = "block";
       msg.style.color = "green";
       msg.innerText = "✅ Login successful! Redirecting...";
@@ -176,14 +173,16 @@
       msg.innerText = "❌ Invalid username or password";
     }
 
-    return false; // stop page refresh
+    return false;
   }
 </script>
 
 
 
+
 </body>
 </html>
+
 
 
 
