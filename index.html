@@ -153,34 +153,45 @@
 </div>
 
 <script>
-  function checkLogin() {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-    const msg  = document.getElementById("message");
+function checkLogin() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const msg  = document.getElementById("message");
 
-    if (user === "Carmel" && pass === "Ramos") {
+  // Example: only one user for simplicity; you can expand this
+  if ((user === "Carmel" && pass === "Ramos") || (user === "Lance" && pass === "1234")) {
 
-      // ✅ SAVE LOGIN INFO HERE
-      localStorage.setItem("cashierName", user);
-      localStorage.setItem("isLoggedIn", "true");
+    // Save login info
+    localStorage.setItem("cashierName", user);
+    localStorage.setItem("isLoggedIn", "true");
 
-      msg.style.display = "block";
-      msg.style.color = "green";
-      msg.innerText = "✅ Login successful! Redirecting...";
+    // ✅ Automatic Attendance - Clock In
+    let attendance = JSON.parse(localStorage.getItem("attendance") || "[]");
+    attendance.push({
+      cashier: user,
+      loginTime: new Date(),  // store full Date object
+      logoutTime: null
+    });
+    localStorage.setItem("attendance", JSON.stringify(attendance));
 
-      setTimeout(() => {
-        window.location.href = "maininterfaced.html";
-      }, 1500);
+    msg.style.display = "block";
+    msg.style.color = "green";
+    msg.innerText = "✅ Login successful! Redirecting...";
 
-    } else {
-      msg.style.display = "block";
-      msg.style.color = "red";
-      msg.innerText = "❌ Invalid username or password";
-    }
+    setTimeout(() => {
+      window.location.href = "maininterfaced.html";
+    }, 1200);
 
-    return false;
+  } else {
+    msg.style.display = "block";
+    msg.style.color = "red";
+    msg.innerText = "❌ Invalid username or password";
   }
+
+  return false; // prevent form submission
+}
 </script>
+
 
 
 
@@ -188,6 +199,7 @@
 
 </body>
 </html>
+
 
 
 
