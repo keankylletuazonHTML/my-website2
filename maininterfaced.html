@@ -316,6 +316,7 @@ Enjoy using the cashier system!
 <button id="clearQueueBtn">Clear Queue</button>
 </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
 /* ===== INITIAL SETUP ===== */
@@ -332,8 +333,7 @@ let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [
 {code:"A6",name:"Fries",price:40,stock:35}
 ];
 let queue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
-let selected=0,deleteIndex=null,clearRequested=false,adminTries=0;
-
+let selected=0, deleteIndex=null, clearRequested=false, adminTries=0;
 const cashierName = localStorage.getItem("cashierName") || "Unknown";
 
 /* ===== SAVE ===== */
@@ -342,121 +342,188 @@ function saveQueue(){ localStorage.setItem(QUEUE_KEY, JSON.stringify(queue)); }
 
 /* ===== ITEMS PANEL ===== */
 function renderItems(){
-const wrap=document.getElementById("itemButtons");
-wrap.innerHTML="";
-items.forEach((item,i)=>{
-const btn=document.createElement("button");
-btn.className="item-btn"; if(i===selected) btn.classList.add("selected");
-btn.textContent=`${item.name}\n₱${item.price}`;
-btn.onclick=()=>{ selected=i; addToQueue(i); renderItems(); };
-wrap.appendChild(btn);
-});
+    const wrap=document.getElementById("itemButtons");
+    wrap.innerHTML="";
+    items.forEach((item,i)=>{
+        const btn=document.createElement("button");
+        btn.className="item-btn"; 
+        if(i===selected) btn.classList.add("selected");
+        btn.textContent=`${item.name}\n₱${item.price}`;
+        btn.onclick=()=>{ selected=i; addToQueue(i); renderItems(); };
+        wrap.appendChild(btn);
+    });
 }
+
 function addToQueue(i){
-const item=items[i];
-if(item.stock===0){alert("Out of stock!"); return;}
-let existing=queue.find(q=>q.code===item.code);
-if(existing){ if(existing.qty<item.stock) existing.qty++; else alert("Not enough stock!"); }
-else queue.push({code:item.code,qty:1});
-saveQueue(); renderQueue();
+    const item=items[i];
+    if(item.stock===0){alert("Out of stock!"); return;}
+    let existing=queue.find(q=>q.code===item.code);
+    if(existing){ if(existing.qty<item.stock) existing.qty++; else alert("Not enough stock!"); }
+    else queue.push({code:item.code,qty:1});
+    saveQueue(); renderQueue();
 }
+
 function queueTotal(){ return queue.reduce((t,q)=>t+items.find(i=>i.code===q.code).price*q.qty,0); }
+
 function renderQueue(){
-const tb=document.getElementById("queue-body");
-tb.innerHTML="";
-queue.forEach((q,i)=>{
-const it=items.find(x=>x.code===q.code);
-const tr=document.createElement("tr");
-tr.innerHTML=`<td>${it.name}</td><td>${q.qty}</td><td>₱${it.price}</td><td>₱${it.price*q.qty}</td>
-   <td><button onclick="requestDelete(${i})" style="padding:5px;background:#d11;color:white;border:none;border-radius:4px;">X</button></td>`;
-tb.appendChild(tr);
-});
-document.getElementById("queueTotal").textContent="Queue Total: ₱"+queueTotal().toFixed(2);
-updateChange();
+    const tb=document.getElementById("queue-body");
+    tb.innerHTML="";
+    queue.forEach((q,i)=>{
+        const it=items.find(x=>x.code===q.code);
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td>${it.name}</td><td>${q.qty}</td><td>₱${it.price}</td><td>₱${it.price*q.qty}</td>
+        <td><button onclick="requestDelete(${i})" style="padding:5px;background:#d11;color:white;border:none;border-radius:4px;">X</button></td>`;
+        tb.appendChild(tr);
+    });
+    document.getElementById("queueTotal").textContent="Queue Total: ₱"+queueTotal().toFixed(2);
+    updateChange();
 }
 
 /* ===== ADMIN DELETE ===== */
 function requestDelete(i){ deleteIndex=i; clearRequested=false; document.getElementById("adminModalBG").style.display="flex"; }
 function confirmAdmin(){
-const pass=document.getElementById("adminPassInput").value;
-if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
-if(clearRequested){ queue=[]; saveQueue(); renderQueue(); document.getElementById("paymentInput").value=""; updateChange(); clearRequested=false; }
-else if(deleteIndex!==null){ queue.splice(deleteIndex,1); saveQueue(); renderQueue(); }
-closeAdmin(); adminTries=0;
-} else {
-adminTries++; alert("Wrong password!"); if(adminTries>=3){alert("Too many attempts — system locked."); location.reload();}
+    const pass=document.getElementById("adminPassInput").value;
+    if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
+        if(clearRequested){
+            queue=[]; saveQueue(); renderQueue();
+            document.getElementById("paymentInput").value="";
+            updateChange();
+        } else if(deleteIndex!==null){
+            queue.splice(deleteIndex,1); saveQueue(); renderQueue();
+        }
+        closeAdmin(); adminTries=0;
+    } else {
+        adminTries++; alert("Wrong password!");
+        if(adminTries>=3){alert("Too many attempts — system locked."); location.reload();}
+    }
 }
+
+function closeAdmin(){ 
+    document.getElementById("adminModalBG").style.display="none"; 
+    document.getElementById("adminPassInput").value=""; 
+    deleteIndex=null; clearRequested=false; 
 }
-function closeAdmin(){ document.getElementById("adminModalBG").style.display="none"; document.getElementById("adminPassInput").value=""; deleteIndex=null; clearRequested=false; }
 
 /* ===== PAYMENT ===== */
 document.getElementById("paymentInput").addEventListener("input", updateChange);
 function updateChange(){
-const payment=Number(document.getElementById("paymentInput").value);
-const total=queueTotal();
-const change=payment-total;
-document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");
+    const payment=Number(document.getElementById("paymentInput").value);
+    const total=queueTotal();
+    const change=payment-total;
+    document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");
 }
 
 /* ===== CLEAR QUEUE ===== */
 document.getElementById("clearQueueBtn").onclick=()=>{
-clearRequested=true; deleteIndex=null; document.getElementById("adminModalBG").style.display="flex";
+    clearRequested=true; deleteIndex=null; document.getElementById("adminModalBG").style.display="flex";
 }
 
 /* ===== CONFIRM SALE ===== */
 document.getElementById("confirmOrdersBtn").onclick=()=>{
-if(queue.length===0){alert("Queue is empty!"); return;}
-const payment = Number(document.getElementById("paymentInput").value);
-const total = queueTotal();
-if(payment < total){ alert("Insufficient payment!"); return; }
+    if(queue.length===0){alert("Queue is empty!"); return;}
+    const payment = Number(document.getElementById("paymentInput").value);
+    const total = queueTotal();
+    if(payment < total){ alert("Insufficient payment!"); return; }
 
-sendToDashboard(queue, total);
+    sendToDashboard(queue, total);
 
-queue.forEach(order=>{
-const it = items.find(i=>i.code===order.code);
-it.stock -= order.qty;
-});
-saveItems();
+    queue.forEach(order=>{
+        const it = items.find(i=>i.code===order.code);
+        it.stock -= order.qty;
+    });
+    saveItems();
 
-queue=[]; saveQueue(); renderQueue();
-document.getElementById("paymentInput").value=""; updateChange();
-alert("Sale recorded!");
+    queue=[]; saveQueue(); renderQueue();
+    document.getElementById("paymentInput").value=""; updateChange();
+    alert("Sale recorded!");
 }
 
 /* ===== SEND TO DASHBOARD ===== */
 function sendToDashboard(queue, totalAmount){
-let transactions = JSON.parse(localStorage.getItem("trans")||"[]");
-const desc = queue.map(q=>items.find(i=>i.code===q.code).name + " x"+q.qty).join(", ");
-transactions.push({
-time: Date.now(),
-date: new Date().toLocaleDateString(),
-desc: desc,
-amt: totalAmount,
-cashier: cashierName
-});
-localStorage.setItem("trans", JSON.stringify(transactions));
+    let transactions = JSON.parse(localStorage.getItem("trans")||"[]");
+    const desc = queue.map(q=>items.find(i=>i.code===q.code).name + " x"+q.qty).join(", ");
+    transactions.push({
+        time: Date.now(),
+        date: new Date().toLocaleDateString(),
+        desc: desc,
+        amt: totalAmount,
+        cashier: cashierName
+    });
+    localStorage.setItem("trans", JSON.stringify(transactions));
 }
 
-/* ===== LOGOUT & CLOCK OUT ===== */
+/* ===== LOGOUT ===== */
 function logoutCashier(){
-let attendance = JSON.parse(localStorage.getItem("attendance")||"[]");
-for(let i=attendance.length-1;i>=0;i--){
-if(attendance[i].cashier===cashierName && !attendance[i].logoutTime){
-attendance[i].logoutTime = new Date();
-break;
+    let attendance = JSON.parse(localStorage.getItem("attendance")||"[]");
+    for(let i=attendance.length-1;i>=0;i--){
+        if(attendance[i].cashier===cashierName && !attendance[i].logoutTime){
+            attendance[i].logoutTime = new Date();
+            break;
+        }
+    }
+    localStorage.setItem("attendance", JSON.stringify(attendance));
+    localStorage.removeItem("cashierName");
+    localStorage.removeItem("isLoggedIn");
+    window.location.href="index.html";
 }
+
+/* ===== TUTORIAL ===== */
+function closeTutorial(){ document.getElementById("tutorial").style.display="none"; }
+
+/* ===== INVENTORY ===== */
+function openInventory(){ 
+    populateInventorySelect();
+    document.getElementById("inventoryModalBG").style.display="flex"; 
 }
-localStorage.setItem("attendance", JSON.stringify(attendance));
-localStorage.removeItem("cashierName");
-localStorage.removeItem("isLoggedIn");
-window.location.href="index.html";
+function closeInventory(){ document.getElementById("inventoryModalBG").style.display="none"; }
+
+function saveInventoryChanges(){
+    const selectedCode = document.getElementById("inventorySelect").value;
+    const stock = Number(document.getElementById("stockInput").value);
+    const price = Number(document.getElementById("priceInput").value);
+    const newName = document.getElementById("newProductName").value;
+    const newPrice = Number(document.getElementById("newProductPrice").value);
+
+    const item = items.find(i => i.code === selectedCode);
+    if(item){
+        if(!isNaN(stock)) item.stock += stock;
+        if(!isNaN(price) && price>0) item.price = price;
+    }
+
+    if(newName && !isNaN(newPrice) && newPrice>0){
+        const newCode = 'A' + (items.length+1);
+        items.push({code:newCode,name:newName,price:newPrice,stock:0});
+    }
+
+    saveItems();
+    renderItems();
+    closeInventory();
+    alert("Inventory updated!");
 }
+
+function populateInventorySelect(){
+    const select = document.getElementById("inventorySelect");
+    select.innerHTML = "";
+    items.forEach(item=>{
+        const opt = document.createElement("option");
+        opt.value = item.code;
+        opt.textContent = `${item.name} (Stock: ${item.stock})`;
+        select.appendChild(opt);
+    });
+}
+
+/* ===== KEYBOARD SHORTCUTS ===== */
+document.addEventListener("keydown", (e) => {
+    if(e.key === "ArrowRight") { selected = (selected + 1) % items.length; renderItems(); }
+    else if(e.key === "ArrowLeft") { selected = (selected - 1 + items.length) % items.length; renderItems(); }
+    else if(e.key === "Enter") { addToQueue(selected); }
+    else if(e.key === "Escape") { clearRequested = true; deleteIndex = null; document.getElementById("adminModalBG").style.display="flex"; }
+    else if(e.key === "Delete") { deleteIndex = selected; clearRequested = false; document.getElementById("adminModalBG").style.display="flex"; }
+});
 
 /* ===== INITIAL LOAD ===== */
 renderItems(); renderQueue();
 </script>
-
-
 
 </body>
 </html>
