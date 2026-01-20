@@ -84,8 +84,6 @@ input, select{padding:8px;border-radius:6px;border:none;}
 <div id="attendanceSection" class="section hidden">
   <div class="panel">
     <h2>Attendance</h2>
-    <button class="btn" id="btnClockIn">Clock In</button>
-    <button class="btn" id="btnClockOut">Clock Out</button>
     <table>
       <thead><tr><th>Date</th><th>Time In</th><th>Time Out</th></tr></thead>
       <tbody id="attTable"></tbody>
@@ -146,32 +144,27 @@ document.querySelectorAll('.menu button').forEach(b=>{
  }
 });
 
-/* --- ATTENDANCE --- */
-function todayKey(){return new Date().toISOString().slice(0,10);}
-$('btnClockIn').onclick = () => {
-  let a = JSON.parse(localStorage.getItem('ep_att') || '[]');
-  const now = new Date();
-  const date = now.toLocaleDateString();
-  const time = now.toLocaleTimeString();
-  let rec = a.find(r=>r.key===todayKey());
-  if(!rec){ rec={key:todayKey(),date,in:time,out:""}; a.push(rec);}
-  else if(!rec.in) rec.in = time;
-  localStorage.setItem('ep_att',JSON.stringify(a));
-  renderAttendance();
-};
-$('btnClockOut').onclick = () => {
-  let a = JSON.parse(localStorage.getItem('ep_att') || '[]');
-  let rec = a.find(r=>r.key===todayKey());
-  if(rec && !rec.out) rec.out = new Date().toLocaleTimeString();
-  localStorage.setItem('ep_att',JSON.stringify(a));
-  renderAttendance();
-};
+/* --- ATTENDANCE AUTOMATIC FOR MULTIPLE SITES --- */
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
 function renderAttendance(){
   const a = JSON.parse(localStorage.getItem('ep_att') || '[]');
   $('attTable').innerHTML = a.map(r=>`<tr><td>${r.date}</td><td>${r.in}</td><td>${r.out||'—'}</td></tr>`).join('');
-  const today = a.find(r=>r.key===todayKey());
-  if(today){ $('clockIn').textContent = today.in; $('clockOut').textContent = today.out||'—'; }
+  const today = a.find(r=>r.key === todayKey());
+  if(today){ 
+    $('clockIn').textContent = today.in || '—'; 
+    $('clockOut').textContent = today.out || '—'; 
+  }
 }
+
+// Detect changes from Login/Logout sites
+window.addEventListener('storage', (event)=>{
+  if(event.key === 'ep_att'){
+    renderAttendance(); // refresh automatically
+  }
+});
+
+// Initial render
 renderAttendance();
 
 /* --- TRANSACTIONS --- */
