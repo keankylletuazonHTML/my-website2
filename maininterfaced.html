@@ -308,10 +308,6 @@ renderItems();
 closeInventory();
 }
 
-/* INITIAL LOAD */
-renderItems();
-renderQueue();
-</script>
 
 function sendToDashboard(queue, totalAmount){
   let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
@@ -328,14 +324,19 @@ function sendToDashboard(queue, totalAmount){
     date: new Date().toLocaleDateString(),
     desc: desc,
     amt: totalAmount,
-    cashier: cashierName // ✅ FIX
+    cashier: cashierName
   });
 
   localStorage.setItem("trans", JSON.stringify(transactions));
 }
 
+/* INITIAL LOAD */
+renderItems();
+renderQueue();
+
 
 </body>
 </html>
+
 
 
