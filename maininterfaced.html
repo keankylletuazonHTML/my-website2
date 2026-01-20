@@ -4,465 +4,348 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Canteen Cashier System</title>
-
 <style>
 /* ===== GENERAL ===== */
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-    font-family:'Segoe UI',sans-serif;
-    background:#0d1b3d;
-    color:white;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-}
-
-header {
-    background:#09132d;
-    padding:12px 20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-header img {
-    height:80px;
-    border:3px solid white;
-    border-radius:6px;
-    margin-right:15px;
-}
-
-.header-left { display:flex; align-items:center; }
-
-header h1 { font-size:24px; font-weight:700; }
-
-.nav-btns a {
-    background:white;
-    color:#09132d;
-    padding:8px 15px;
-    border-radius:6px;
-    font-weight:bold;
-    text-decoration:none;
-    margin-left:10px;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b3d;color:white;height:100vh;display:flex;flex-direction:column;}
+header{background:#09132d;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+header img{height:80px;border:3px solid white;border-radius:6px;margin-right:15px;}
+.header-left{display:flex;align-items:center;}
+header h1{font-size:24px;font-weight:700;}
+.nav-btns a{background:white;color:#09132d;padding:8px 15px;border-radius:6px;font-weight:bold;text-decoration:none;margin-left:10px;}
 /* ===== MAIN LAYOUT ===== */
-.pos-container {
-    flex:1;
-    display:grid;
-    grid-template-columns:2fr 1.2fr;
-    padding:20px;
-    gap:20px;
-}
-
-.panel {
-    background:white;
-    color:black;
-    border-radius:12px;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-}
-
-.panel h2 {
-    background:#0a1533;
-    color:white;
-    padding:12px;
-    border-radius:6px;
-    text-align:center;
-    margin-bottom:15px;
-}
-
-.item-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-    gap:14px;
-}
-
-.item-btn {
-    padding:22px 12px;
-    font-size:17px;
-    font-weight:bold;
-    background:#1e3fa1;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.item-btn:hover { background:#2a4fcc; }
-.item-btn.selected { background:#142b69; box-shadow:0 0 5px #06122e; }
-
-table {
-    width:100%;
-    border-collapse:collapse;
-    font-size:15px;
-}
-
-th, td {
-    border-bottom:1px solid #ddd;
-    padding:6px;
-    text-align:center;
-}
-
-button#confirmOrdersBtn {
-    background:#007b3a;
-    color:white;
-    margin-top:10px;
-    padding:10px;
-    border-radius:6px;
-    border:none;
-    cursor:pointer;
-}
-
-button#clearQueueBtn {
-    background:#b32828;
-    color:white;
-    margin-top:10px;
-    padding:10px;
-    border-radius:6px;
-    border:none;
-    cursor:pointer;
-}
-
-#queueTotal { margin-top:10px; font-weight:bold; }
-
-input { padding:8px; margin-bottom:8px; width:100%; }
-
+.pos-container{flex:1;display:grid;grid-template-columns:2fr 1.2fr;padding:20px;gap:20px;}
+.panel{background:white;color:black;border-radius:12px;padding:20px;display:flex;flex-direction:column;}
+.panel h2{background:#0a1533;color:white;padding:12px;border-radius:6px;text-align:center;margin-bottom:15px;}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
+.item-btn{padding:22px 12px;font-size:17px;font-weight:bold;background:#1e3fa1;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s;}
+.item-btn:hover{background:#2a4fcc;}
+.item-btn.selected{background:#142b69;box-shadow:0 0 5px #06122e;}
+table{width:100%;border-collapse:collapse;font-size:15px;}
+th,td{border-bottom:1px solid #ddd;padding:6px;text-align:center;}
+button#confirmOrdersBtn{background:#007b3a;color:white;margin-top:10px;padding:10px;border-radius:6px;border:none;cursor:pointer;}
+button#clearQueueBtn{background:#b32828;color:white;margin-top:10px;padding:10px;border-radius:6px;border:none;cursor:pointer;}
+#queueTotal{margin-top:10px;font-weight:bold;}
+input{padding:8px;margin-bottom:8px;width:100%;}
 /* ===== TUTORIAL POPUP ===== */
-#tutorial {
-    position:fixed;
-    top:0; left:0; right:0; bottom:0;
-    background:rgba(0,0,0,0.65);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-#tutorial-box {
-    background:white;
-    color:black;
-    padding:25px;
-    width:380px;
-    border-radius:12px;
-    text-align:center;
-    animation:pop 0.25s ease-out;
-    z-index:10000;
-}
-
-@keyframes pop {
-    from { transform:scale(0.8); opacity:0; }
-    to { transform:scale(1); opacity:1; }
-}
-
-#tutorial button {
-    margin-top:15px;
-    padding:10px;
-    width:100%;
-    background:#0d1b3d;
-    color:white;
-    border:0;
-    border-radius:6px;
-    cursor:pointer;
-}
-
+#tutorial{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;justify-content:center;align-items:center;}
+#tutorial-box{background:white;color:black;padding:25px;width:380px;border-radius:12px;text-align:center;animation:pop 0.25s ease-out;}
+@keyframes pop{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+#tutorial button{margin-top:15px;padding:10px;width:100%;background:#0d1b3d;color:white;border:0;border-radius:6px;cursor:pointer;}
 /* ===== ADMIN MODAL ===== */
-#adminModalBG {
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.7);
-    display:none;
-    justify-content:center;
-    align-items:center;
-}
-
-#adminModal {
-    background:white;
-    color:black;
-    padding:25px;
-    width:300px;
-    border-radius:8px;
-    text-align:center;
-}
-
-#adminModal input { width:90%; margin:12px 0; padding:8px; font-size:14px; }
-#adminModal button { padding:8px 10px; width:100%; margin-top:10px; cursor:pointer; }
-
+#adminModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;}
+#adminModal{background:white;color:black;padding:25px;width:300px;border-radius:8px;text-align:center;}
+#adminModal input{width:90%;margin:12px 0;padding:8px;font-size:14px;}
+#adminModal button{padding:8px 10px;width:100%;margin-top:10px;cursor:pointer;}
 /* ===== INVENTORY BUTTON & MODAL ===== */
-#inventoryBtn {
-    position:fixed;
-    bottom:25px; right:25px;
-    background:#ffb200;
-    color:black;
-    font-weight:bold;
-    padding:15px 20px;
-    border-radius:50px;
-    border:none;
-    font-size:16px;
-    cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.4);
-    z-index:9999;
-}
-
-#inventoryModalBG {
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:99999;
-}
-
-#inventoryModal {
-    background:white;
-    color:black;
-    padding:20px;
-    width:400px;
-    border-radius:10px;
-}
-
-#inventoryModal h2 { margin-bottom:10px; }
-#inventoryModal input, #inventoryModal select { width:90%; padding:7px; margin:6px 0; }
-#inventoryModal button { padding:8px 10px; width:100%; margin-top:10px; background:#0d1b3d; color:white; border-radius:6px; border:none; cursor:pointer; }
+#inventoryBtn{position:fixed;bottom:25px;right:25px;background:#ffb200;color:black;font-weight:bold;padding:15px 20px;border-radius:50px;border:none;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4);z-index:9999;}
+#inventoryModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:99999;}
+#inventoryModal{background:white;color:black;padding:20px;width:400px;border-radius:10px;}
+#inventoryModal h2{margin-bottom:10px;}
+#inventoryModal input,#inventoryModal select{width:90%;padding:7px;margin:6px 0;}
+#inventoryModal button{padding:8px 10px;width:100%;margin-top:10px;background:#0d1b3d;color:white;border-radius:6px;border:none;cursor:pointer;}
 </style>
 </head>
-
 <body>
+
 <header>
-    <div class="header-left">
-        <img src="logocashier.jpg" alt="Logo">
-        <h1>Canteen Cashier System</h1>
-    </div>
-    <div class="nav-btns">
-        <a href="dashboard1-1.html">Dashboard</a>
-        <a href="index.html">Logout</a>
-    </div>
+<div class="header-left">
+<img src="logocashier.jpg" alt="Logo">
+<h1>Canteen Cashier System</h1>
+</div>
+<div class="nav-btns">
+<a href="dashboard1-1.html">Dashboard</a>
+<a href="index.html">Logout</a>
+</div>
 </header>
 
 <!-- TUTORIAL -->
 <div id="tutorial">
-    <div id="tutorial-box">
-        <h2>Welcome!</h2>
-        <p style="font-size:15px; margin-top:10px;">
-            👉 Tap products to increase quantity<br>
-            👉 ENTER = Add item<br>
-            👉 ← → = Select product<br>
-            👉 ESC = Clear queue (admin)<br>
-            👉 Delete = Remove item (admin)<br><br>
-            Enjoy using the cashier system!
-        </p>
-        <button onclick="closeTutorial()">Got it!</button>
-    </div>
+<div id="tutorial-box">
+<h2>Welcome!</h2>
+<p style="font-size:15px; margin-top:10px;">
+👉 Tap products to increase quantity<br>
+👉 ENTER = Add item<br>
+👉 ← → = Select product<br>
+👉 ESC = Clear queue (admin)<br>
+👉 Delete = Remove item (admin)<br><br>
+Enjoy using the cashier system!
+</p>
+<button onclick="closeTutorial()">Got it!</button>
+</div>
 </div>
 
 <!-- ADMIN PASSWORD MODAL -->
 <div id="adminModalBG">
-    <div id="adminModal">
-        <h3>Admin Password</h3>
-        <input type="password" id="adminPassInput" placeholder="Enter password">
-        <button onclick="confirmAdmin()">Confirm</button>
-        <button onclick="closeAdmin()" style="background:#b32828;color:white;margin-top:10px;padding:8px;width:100%;">Cancel</button>
-    </div>
+<div id="adminModal">
+<h3>Admin Password</h3>
+<input type="password" id="adminPassInput" placeholder="Enter password">
+<button onclick="confirmAdmin()">Confirm</button>
+<button onclick="closeAdmin()" style="background:#b32828;color:white;margin-top:10px;padding:8px;width:100%;">Cancel</button>
+</div>
 </div>
 
 <!-- INVENTORY MODAL -->
 <div id="inventoryModalBG">
-    <div id="inventoryModal">
-        <h2>Inventory Management</h2>
-        <select id="inventorySelect"></select>
-        <input type="number" id="stockInput" placeholder="Add Stock (+)">
-        <input type="number" id="priceInput" placeholder="New Price (optional)">
-        <input type="text" id="newProductName" placeholder="Add New Product Name">
-        <input type="number" id="newProductPrice" placeholder="New Product Price">
-        <button onclick="saveInventoryChanges()">Save Changes</button>
-        <button onclick="closeInventory()" style="background:#b32828;">Close</button>
-    </div>
+<div id="inventoryModal">
+<h2>Inventory Management</h2>
+<select id="inventorySelect"></select>
+<input type="number" id="stockInput" placeholder="Add Stock (+)">
+<input type="number" id="priceInput" placeholder="New Price (optional)">
+<input type="text" id="newProductName" placeholder="Add New Product Name">
+<input type="number" id="newProductPrice" placeholder="New Product Price">
+<button onclick="saveInventoryChanges()">Save Changes</button>
+<button onclick="closeInventory()" style="background:#b32828;">Close</button>
+</div>
 </div>
 
 <!-- FLOATING INVENTORY BUTTON -->
 <button id="inventoryBtn" onclick="openInventory()">📦 Inventory</button>
 
 <div class="pos-container">
-    <!-- PRODUCT PANEL -->
-    <div class="panel">
-        <h2>Food Items</h2>
-        <div class="item-grid" id="itemButtons"></div>
-    </div>
-
-    <!-- QUEUE PANEL -->
-    <div class="panel">
-        <h2>Order Queue</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Del</th>
-                </tr>
-            </thead>
-            <tbody id="queue-body"></tbody>
-        </table>
-        <div class="total" id="queueTotal">Queue Total: ₱0.00</div>
-        <h3 style="margin-top:15px;">Payment:</h3>
-        <input type="number" id="paymentInput" placeholder="Customer payment">
-        <h3>Change:</h3>
-        <div id="changeDisplay">₱0.00</div>
-        <button id="confirmOrdersBtn">Confirm Sale</button>
-        <button id="clearQueueBtn">Clear Queue</button>
-    </div>
+<!-- PRODUCT PANEL -->
+<div class="panel">
+<h2>Food Items</h2>
+<div class="item-grid" id="itemButtons"></div>
 </div>
+
+<!-- QUEUE PANEL -->
+<div class="panel">
+<h2>Order Queue</h2>
+<table>
+<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th>Del</th></tr></thead>
+<tbody id="queue-body"></tbody>
+</table>
+<div class="total" id="queueTotal">Queue Total: ₱0.00</div>
+<h3 style="margin-top:15px;">Payment:</h3>
+<input type="number" id="paymentInput" placeholder="Customer payment">
+<h3>Change:</h3>
+<div id="changeDisplay">₱0.00</div>
+<button id="confirmOrdersBtn">Confirm Sale</button>
+<button id="clearQueueBtn">Clear Queue</button>
+</div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-/* ===== INITIAL SETUP ===== */
-const ITEMS_KEY="canteen_items";
-const QUEUE_KEY="canteen_queue";
+/* ===== LOCAL STORAGE DATA ===== */
+const ITEMS_KEY = "canteen_items";
+const QUEUE_KEY = "canteen_queue";
 const ADMIN_HASH="81dc9bdb52d04dc20036dbd8313ed055";
 
 let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [
-  {code:"A1",name:"Burger",price:35,stock:50},
-  {code:"A2",name:"Soda",price:25,stock:40},
-  {code:"A3",name:"Biscuits",price:15,stock:60},
-  {code:"A4",name:"Meal",price:60,stock:30},
-  {code:"A5",name:"Hotdog",price:30,stock:45},
-  {code:"A6",name:"Fries",price:40,stock:35}
+{code:"A1",name:"Burger",price:35,stock:50},
+{code:"A2",name:"Soda",price:25,stock:40},
+{code:"A3",name:"Biscuits",price:15,stock:60},
+{code:"A4",name:"Meal",price:60,stock:30},
+{code:"A5",name:"Hotdog",price:30,stock:45},
+{code:"A6",name:"Fries",price:40,stock:35}
 ];
+
 let queue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
 let selected=0,deleteIndex=null,clearRequested=false,adminTries=0;
 
-const cashierName = localStorage.getItem("cashierName") || "Unknown";
+/* SAVE FUNCTIONS */
+function saveItems(){localStorage.setItem(ITEMS_KEY, JSON.stringify(items));}
+function saveQueue(){localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));}
 
-/* ===== SAVE ===== */
-function saveItems(){ localStorage.setItem(ITEMS_KEY, JSON.stringify(items)); }
-function saveQueue(){ localStorage.setItem(QUEUE_KEY, JSON.stringify(queue)); }
+/* TUTORIAL */
+function closeTutorial(){document.getElementById("tutorial").style.display="none";}
 
-/* ===== ITEMS PANEL ===== */
+/* RENDER ITEMS */
 function renderItems(){
-  const wrap=document.getElementById("itemButtons");
-  wrap.innerHTML="";
-  items.forEach((item,i)=>{
-    const btn=document.createElement("button");
-    btn.className="item-btn"; if(i===selected) btn.classList.add("selected");
-    btn.textContent=`${item.name}\n₱${item.price}`;
-    btn.onclick=()=>{ selected=i; addToQueue(i); renderItems(); };
-    wrap.appendChild(btn);
-  });
+const wrap=document.getElementById("itemButtons");
+wrap.innerHTML="";
+items.forEach((item,i)=>{
+const btn=document.createElement("button");
+btn.className="item-btn";
+if(i===selected) btn.classList.add("selected");
+btn.textContent=`${item.name}\n₱${item.price}`;
+btn.onclick=()=>{selected=i;addToQueue(i);renderItems();};
+wrap.appendChild(btn);
+});
 }
+
+/* ADD TO QUEUE */
 function addToQueue(i){
-  const item=items[i];
-  if(item.stock===0){alert("Out of stock!"); return;}
-  let existing=queue.find(q=>q.code===item.code);
-  if(existing){ if(existing.qty<item.stock) existing.qty++; else alert("Not enough stock!"); }
-  else queue.push({code:item.code,qty:1});
-  saveQueue(); renderQueue();
+const item=items[i];
+if(item.stock===0){alert("Out of stock!"); return;}
+let existing=queue.find(q=>q.code===item.code);
+if(existing){if(existing.qty<item.stock) existing.qty++; else alert("Not enough stock!");}
+else queue.push({code:item.code,qty:1});
+saveQueue();
+renderQueue();
 }
-function queueTotal(){ return queue.reduce((t,q)=>t+items.find(i=>i.code===q.code).price*q.qty,0); }
+
+/* QUEUE TOTAL */
+function queueTotal(){return queue.reduce((t,q)=>t+items.find(i=>i.code===q.code).price*q.qty,0);}
+
+/* RENDER QUEUE */
 function renderQueue(){
-  const tb=document.getElementById("queue-body");
-  tb.innerHTML="";
-  queue.forEach((q,i)=>{
-    const it=items.find(x=>x.code===q.code);
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${it.name}</td><td>${q.qty}</td><td>₱${it.price}</td><td>₱${it.price*q.qty}</td>
-    <td><button onclick="requestDelete(${i})" style="padding:5px;background:#d11;color:white;border:none;border-radius:4px;">X</button></td>`;
-    tb.appendChild(tr);
-  });
-  document.getElementById("queueTotal").textContent="Queue Total: ₱"+queueTotal().toFixed(2);
-  updateChange();
+const tb=document.getElementById("queue-body");
+tb.innerHTML="";
+queue.forEach((q,i)=>{
+const it=items.find(x=>x.code===q.code);
+const tr=document.createElement("tr");
+tr.innerHTML=`<td>${it.name}</td><td>${q.qty}</td><td>₱${it.price}</td><td>₱${it.price*q.qty}</td>
+<td><button onclick="requestDelete(${i})" style="padding:5px;background:#d11;color:white;border:none;border-radius:4px;">X</button></td>`;
+tb.appendChild(tr);
+});
+document.getElementById("queueTotal").textContent="Queue Total: ₱"+queueTotal().toFixed(2);
+updateChange();
 }
 
-/* ===== ADMIN DELETE ===== */
-function requestDelete(i){ deleteIndex=i; clearRequested=false; document.getElementById("adminModalBG").style.display="flex"; }
+/* ADMIN DELETE */
+function requestDelete(i){deleteIndex=i;clearRequested=false;document.getElementById("adminModalBG").style.display="flex";}
 function confirmAdmin(){
-  const pass=document.getElementById("adminPassInput").value;
-  if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
-    if(clearRequested){ queue=[]; saveQueue(); renderQueue(); document.getElementById("paymentInput").value=""; updateChange(); clearRequested=false; }
-    else if(deleteIndex!==null){ queue.splice(deleteIndex,1); saveQueue(); renderQueue(); }
-    closeAdmin(); adminTries=0;
-  } else {
-    adminTries++; alert("Wrong password!"); if(adminTries>=3){alert("Too many attempts — system locked."); location.reload();}
-  }
+const pass=document.getElementById("adminPassInput").value;
+if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
+if(clearRequested){
+queue=[];
+saveQueue();
+renderQueue();
+document.getElementById("paymentInput").value="";
+updateChange();
+clearRequested=false;
 }
-function closeAdmin(){ document.getElementById("adminModalBG").style.display="none"; document.getElementById("adminPassInput").value=""; deleteIndex=null; clearRequested=false; }
+else if(deleteIndex!==null){
+queue.splice(deleteIndex,1);
+saveQueue();
+renderQueue();
+}
+closeAdmin();adminTries=0;
+}else{adminTries++;alert("Wrong password!");if(adminTries>=3){alert("Too many attempts — system locked.");location.reload();}}
+}
+function closeAdmin(){document.getElementById("adminModalBG").style.display="none";document.getElementById("adminPassInput").value="";deleteIndex=null;clearRequested=false;}
 
-/* ===== PAYMENT ===== */
-document.getElementById("paymentInput").addEventListener("input", updateChange);
+/* PAYMENT & CHANGE */
+document.getElementById("paymentInput").addEventListener("input",updateChange);
 function updateChange(){
-  const payment=Number(document.getElementById("paymentInput").value);
-  const total=queueTotal();
-  const change=payment-total;
-  document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");
+const payment=Number(document.getElementById("paymentInput").value);
+const total=queueTotal();
+const change=payment-total;
+document.getElementById("changeDisplay").textContent="₱"+(change>=0?change.toFixed(2):"0.00");
 }
 
-/* ===== CLEAR QUEUE ===== */
+/* CLEAR QUEUE */
 document.getElementById("clearQueueBtn").onclick=()=>{
-  clearRequested=true; deleteIndex=null; document.getElementById("adminModalBG").style.display="flex";
+clearRequested=true;
+deleteIndex=null;
+document.getElementById("adminModalBG").style.display="flex";
 }
 
-/* ===== CONFIRM SALE ===== */
+/* CONFIRM SALE */
 document.getElementById("confirmOrdersBtn").onclick=()=>{
+if(queue.length===0){alert("Queue is empty!"); return;}
+const payment=Number(document.getElementById("paymentInput").value);
+const total=queueTotal();
+if(payment<total){alert("Insufficient payment!"); return;}
+queue.forEach(order=>{const it=items.find(i=>i.code===order.code); it.stock-=order.qty;});
+saveItems();
+queue=[];
+saveQueue();
+renderQueue();
+document.getElementById("paymentInput").value="";
+updateChange();
+alert("Sale recorded!");
   if(queue.length===0){alert("Queue is empty!"); return;}
+
   const payment = Number(document.getElementById("paymentInput").value);
   const total = queueTotal();
-  if(payment < total){ alert("Insufficient payment!"); return; }
 
+  if(payment < total){
+    alert("Insufficient payment!");
+    return;
+  }
+
+  // ✅ SEND DATA TO DASHBOARD
   sendToDashboard(queue, total);
 
+  // bawas stock
   queue.forEach(order=>{
     const it = items.find(i=>i.code===order.code);
     it.stock -= order.qty;
   });
+
   saveItems();
 
-  queue=[]; saveQueue(); renderQueue();
-  document.getElementById("paymentInput").value=""; updateChange();
+  // reset queue
+  queue=[];
+  saveQueue();
+  renderQueue();
+
+  document.getElementById("paymentInput").value="";
+  updateChange();
+
   alert("Sale recorded!");
+};
+
+
+/* KEYBOARD */
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowRight"){selected=(selected+1)%items.length; renderItems();}
+if(e.key==="ArrowLeft"){selected=(selected-1+items.length)%items.length; renderItems();}
+if(e.key==="Enter") addToQueue(selected);
+if(e.key==="Escape"){clearRequested=true; document.getElementById("adminModalBG").style.display="flex";}
+});
+
+/* INVENTORY */
+function openInventory(){
+const pass=prompt("Enter admin password:");
+if(CryptoJS.MD5(pass).toString()!==ADMIN_HASH){alert("Wrong password!"); return;}
+const select=document.getElementById("inventorySelect");
+select.innerHTML="";
+items.forEach((item,i)=>{const opt=document.createElement("option"); opt.value=i; opt.textContent=`${item.name} (Stock: ${item.stock})`; select.appendChild(opt);});
+document.getElementById("inventoryModalBG").style.display="flex";
+}
+function closeInventory(){
+document.getElementById("inventoryModalBG").style.display="none";
+document.getElementById("stockInput").value="";
+document.getElementById("priceInput").value="";
+document.getElementById("newProductName").value="";
+document.getElementById("newProductPrice").value="";
+}
+function saveInventoryChanges(){
+const index=Number(document.getElementById("inventorySelect").value);
+const stockAdd=Number(document.getElementById("stockInput").value);
+const priceNew=Number(document.getElementById("priceInput").value);
+const newName=document.getElementById("newProductName").value;
+const newPrice=Number(document.getElementById("newProductPrice").value);
+if(stockAdd) items[index].stock+=stockAdd;
+if(priceNew) items[index].price=priceNew;
+if(newName&&newPrice){const code="A"+(items.length+1); items.push({code:code,name:newName,price:newPrice,stock:0}); alert("New product added!");}
+alert("Inventory updated!");
+saveItems();
+renderItems();
+closeInventory();
 }
 
-/* ===== SEND TO DASHBOARD ===== */
+/* INITIAL LOAD */
+renderItems();
+renderQueue();
+</script>
+
+<script>
+/* ===== SEND TRANSACTION TO DASHBOARD ===== */
 function sendToDashboard(queue, totalAmount){
-  let transactions = JSON.parse(localStorage.getItem("trans")||"[]");
-  const desc = queue.map(q=>items.find(i=>i.code===q.code).name + " x"+q.qty).join(", ");
+  let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
+
+  // gawing isang description ang buong order
+  let desc = queue.map(q => {
+    let item = items.find(i => i.code === q.code);
+    return `${item.name} x${q.qty}`;
+  }).join(", ");
+
   transactions.push({
     time: Date.now(),
     date: new Date().toLocaleDateString(),
     desc: desc,
-    amt: totalAmount,
-    cashier: cashierName
+    amt: totalAmount
   });
+
   localStorage.setItem("trans", JSON.stringify(transactions));
 }
-
-/* ===== LOGOUT & CLOCK OUT ===== */
-function logoutCashier(){
-  let attendance = JSON.parse(localStorage.getItem("attendance")||"[]");
-  for(let i=attendance.length-1;i>=0;i--){
-    if(attendance[i].cashier===cashierName && !attendance[i].logoutTime){
-      attendance[i].logoutTime = new Date();
-      break;
-    }
-  }
-  localStorage.setItem("attendance", JSON.stringify(attendance));
-  localStorage.removeItem("cashierName");
-  localStorage.removeItem("isLoggedIn");
-  window.location.href="index.html";
-}
-
-/* ===== INITIAL LOAD ===== */
-renderItems(); renderQueue();
 </script>
-
-
 
 </body>
 </html>
-
-
-
-
-
-
