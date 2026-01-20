@@ -18,7 +18,7 @@ header h1{font-size:24px;font-weight:700;}
 .panel{background:white;color:black;border-radius:12px;padding:20px;display:flex;flex-direction:column;}
 .panel h2{background:#0a1533;color:white;padding:12px;border-radius:6px;text-align:center;margin-bottom:15px;}
 .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
-.item-btn{padding:22px 12px;font-size:17px;font-weight:bold;background:#1e3fa1;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s;}
+.item-btn{padding:22px 12px;font-size:17px;font-weight:bold;background:#1e3fa1;color:white;border:none;border-radius:8px;cursor:pointer;transition:0.2s;white-space:pre-line;}
 .item-btn:hover{background:#2a4fcc;}
 .item-btn.selected{background:#142b69;box-shadow:0 0 5px #06122e;}
 table{width:100%;border-collapse:collapse;font-size:15px;}
@@ -28,18 +28,18 @@ button#clearQueueBtn{background:#b32828;color:white;margin-top:10px;padding:10px
 #queueTotal{margin-top:10px;font-weight:bold;}
 input{padding:8px;margin-bottom:8px;width:100%;}
 /* ===== TUTORIAL POPUP ===== */
-#tutorial{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;justify-content:center;align-items:center;}
+#tutorial{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.65);display:flex;justify-content:center;align-items:center;z-index:99999;}
 #tutorial-box{background:white;color:black;padding:25px;width:380px;border-radius:12px;text-align:center;animation:pop 0.25s ease-out;}
 @keyframes pop{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
 #tutorial button{margin-top:15px;padding:10px;width:100%;background:#0d1b3d;color:white;border:0;border-radius:6px;cursor:pointer;}
 /* ===== ADMIN MODAL ===== */
-#adminModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;}
+#adminModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:1000;}
 #adminModal{background:white;color:black;padding:25px;width:300px;border-radius:8px;text-align:center;}
 #adminModal input{width:90%;margin:12px 0;padding:8px;font-size:14px;}
 #adminModal button{padding:8px 10px;width:100%;margin-top:10px;cursor:pointer;}
 /* ===== INVENTORY BUTTON & MODAL ===== */
 #inventoryBtn{position:fixed;bottom:25px;right:25px;background:#ffb200;color:black;font-weight:bold;padding:15px 20px;border-radius:50px;border:none;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4);z-index:9999;}
-#inventoryModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:99999;}
+#inventoryModalBG{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;z-index:10000;}
 #inventoryModal{background:white;color:black;padding:20px;width:400px;border-radius:10px;}
 #inventoryModal h2{margin-bottom:10px;}
 #inventoryModal input,#inventoryModal select{width:90%;padding:7px;margin:6px 0;}
@@ -241,15 +241,12 @@ if(queue.length===0){alert("Queue is empty!"); return;}
 const payment = Number(document.getElementById("paymentInput").value);
 const total = queueTotal();
 
-if(payment < total){
-alert("Insufficient payment!");
-return;
-}
+if(payment < total){ alert("Insufficient payment!"); return; }
 
 // ✅ SEND DATA TO DASHBOARD
 sendToDashboard(queue, total);
 
-// bawas stock
+// decrease stock
 queue.forEach(order=>{
 const it = items.find(i=>i.code===order.code);
 it.stock -= order.qty;
@@ -267,7 +264,6 @@ updateChange();
 
 alert("Sale recorded!");
 };
-
 
 /* KEYBOARD */
 document.addEventListener("keydown",e=>{
@@ -308,38 +304,19 @@ renderItems();
 closeInventory();
 }
 
-
-<script>
+/* SEND TO DASHBOARD */
 function sendToDashboard(queue, totalAmount){
 let transactions = JSON.parse(localStorage.getItem("trans") || "[]");
-
 const cashierName = localStorage.getItem("cashierName") || "Unknown";
-
-let desc = queue.map(q => {
-let item = items.find(i => i.code === q.code);
-return `${item.name} x${q.qty}`;
-}).join(", ");
-
-transactions.push({
-time: Date.now(),
-date: new Date().toLocaleDateString(),
-desc: desc,
-amt: totalAmount,
-cashier: cashierName
-});
-
+let desc = queue.map(q => { let item = items.find(i => i.code === q.code); return `${item.name} x${q.qty}`; }).join(", ");
+transactions.push({ time: Date.now(), date: new Date().toLocaleDateString(), desc: desc, amt: totalAmount, cashier: cashierName });
 localStorage.setItem("trans", JSON.stringify(transactions));
 }
-
 
 /* INITIAL LOAD */
 renderItems();
 renderQueue();
 </script>
 
-
 </body>
 </html>
-
-
-
