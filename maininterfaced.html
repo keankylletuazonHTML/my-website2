@@ -283,7 +283,7 @@ Enjoy using the cashier system!
 </div>
 
 <!-- FLOATING INVENTORY BUTTON -->
-<button id="inventoryBtn" onclick="openInventory()">📦 Inventory</button>
+<button id="inventoryBtn" onclick="requestInventoryAdmin()">📦 Inventory</button>
 
 <div class="pos-container">
 <!-- PRODUCT PANEL -->
@@ -334,6 +334,7 @@ let items = JSON.parse(localStorage.getItem(ITEMS_KEY)) || [
 ];
 let queue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
 let selected=0, deleteIndex=null, clearRequested=false, adminTries=0;
+let inventoryRequested = false;
 const cashierName = localStorage.getItem("cashierName") || "Unknown";
 
 /* ===== SAVE ===== */
@@ -381,6 +382,14 @@ function renderQueue(){
 
 /* ===== ADMIN DELETE ===== */
 function requestDelete(i){ deleteIndex=i; clearRequested=false; document.getElementById("adminModalBG").style.display="flex"; }
+
+function requestInventoryAdmin() {
+    inventoryRequested = true;
+    clearRequested = false;
+    deleteIndex = null;
+    document.getElementById("adminModalBG").style.display="flex";
+}
+
 function confirmAdmin(){
     const pass=document.getElementById("adminPassInput").value;
     if(CryptoJS.MD5(pass).toString()===ADMIN_HASH){
@@ -390,6 +399,9 @@ function confirmAdmin(){
             updateChange();
         } else if(deleteIndex!==null){
             queue.splice(deleteIndex,1); saveQueue(); renderQueue();
+        } else if(inventoryRequested){
+            openInventory();
+            inventoryRequested = false;
         }
         closeAdmin(); adminTries=0;
     } else {
@@ -402,6 +414,7 @@ function closeAdmin(){
     document.getElementById("adminModalBG").style.display="none"; 
     document.getElementById("adminPassInput").value=""; 
     deleteIndex=null; clearRequested=false; 
+    inventoryRequested = false;
 }
 
 /* ===== PAYMENT ===== */
