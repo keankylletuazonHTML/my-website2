@@ -118,6 +118,7 @@ input, select{padding:8px;border-radius:6px;border:none;}
           <th>Date</th>
           <th>Item / Description</th>
           <th>Old Stock</th>
+          <th>Sold</th>      <!-- NEW -->
           <th>New Stock</th>
           <th>Total</th>
         </tr>
@@ -246,7 +247,6 @@ function renderInventory(){
     });
 }
 
-
 window.addEventListener('storage', function(event){
     if(event.key === 'inventoryLog'){
         renderInventory();
@@ -327,6 +327,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
