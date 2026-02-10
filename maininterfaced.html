@@ -478,30 +478,23 @@ function sendToDashboard(queue, totalAmount){
 
 /* ===== LOGOUT ===== */
 function logoutCashier(){
-    const cashier = localStorage.getItem("cashierName") || "Unknown";
+    const cashier = localStorage.getItem('cashierName') || 'Unknown';
     const todayKey = new Date().toISOString().slice(0,10);
-
     let ep_att = JSON.parse(localStorage.getItem('ep_att') || '[]');
     let rec = ep_att.find(r => r.key === todayKey && r.cashier === cashier);
-
     const now = new Date().toLocaleTimeString();
     const date = new Date().toLocaleDateString();
-
     if(!rec){
         rec = { key: todayKey, date: date, cashier: cashier, in: "", out: now };
         ep_att.push(rec);
     } else {
         rec.out = now;
     }
-
     localStorage.setItem('ep_att', JSON.stringify(ep_att));
-
     localStorage.removeItem("cashierName");
     localStorage.removeItem("isLoggedIn");
-
     window.location.href="index.html";
 }
-
 
 /* ===== TUTORIAL ===== */
 function closeTutorial(){ document.getElementById("tutorial").style.display="none"; }
@@ -520,47 +513,70 @@ function saveInventoryChanges(){
     const newName = document.getElementById("newProductName").value;
     const newPrice = Number(document.getElementById("newProductPrice").value);
 
+    let inventoryLog = JSON.parse(localStorage.getItem('inventoryLog') || '[]');
+    const now = new Date();
+
     const item = items.find(i => i.code === selectedCode);
     if(item){
+        const oldStock = item.stock;
         if(!isNaN(stock)) item.stock += stock;
         if(!isNaN(price) && price>0) item.price = price;
+
+        // Log the stock/price change
+        inventoryLog.push({
+            date: now.toLocaleDateString(),
+            item: item.name,
+            old: oldStock,
+            new: stock || 0,
+            total: item.stock
+        });
     }
 
     if(newName && !isNaN(newPrice) && newPrice>0){
         const newCode = 'A' + (items.length+1);
         items.push({code:newCode,name:newName,price:newPrice,stock:0});
+
+        // Log new product
+        inventoryLog.push({
+            date: now.toLocaleDateString(),
+            item: newName,
+            old: 0,
+            new: newPrice,
+            total: 0
+        });
     }
 
     saveItems();
+    saveInventoryLog(inventoryLog); 
     renderItems();
     closeInventory();
     alert("Inventory updated!");
+    document.getElementById("stockInput").value="";
+    document.getElementById("priceInput").value="";
+    document.getElementById("newProductName").value="";
+    document.getElementById("newProductPrice").value="";
 }
 
+/* ===== INVENTORY SELECT POPULATION ===== */
 function populateInventorySelect(){
-    const select = document.getElementById("inventorySelect");
-    select.innerHTML = "";
-    items.forEach(item=>{
+    const sel = document.getElementById("inventorySelect");
+    sel.innerHTML="";
+    items.forEach(it=>{
         const opt = document.createElement("option");
-        opt.value = item.code;
-        opt.textContent = `${item.name} (Stock: ${item.stock})`;
-        select.appendChild(opt);
+        opt.value=it.code;
+        opt.textContent=it.name+" | Stock:"+it.stock+" | ₱"+it.price;
+        sel.appendChild(opt);
     });
 }
 
-/* ===== KEYBOARD SHORTCUTS ===== */
-document.addEventListener("keydown", (e) => {
-    if(e.key === "ArrowRight") { selected = (selected + 1) % items.length; renderItems(); }
-    else if(e.key === "ArrowLeft") { selected = (selected - 1 + items.length) % items.length; renderItems(); }
-    else if(e.key === "Enter") { addToQueue(selected); }
-    else if(e.key === "Escape") { clearRequested = true; deleteIndex = null; document.getElementById("adminModalBG").style.display="flex"; }
-    else if(e.key === "Delete") { deleteIndex = selected; clearRequested = false; document.getElementById("adminModalBG").style.display="flex"; }
+/* ===== INITIAL RENDER ===== */
+renderItems();
+renderQueue();
+
+/* ===== STORAGE UPDATE LISTENER ===== */
+window.addEventListener('storage', (e)=>{
+    if(e.key==='inventoryLog'){ console.log("Inventory updated externally."); }
 });
-
-
-/* ===== INITIAL LOAD ===== */
-renderItems(); renderQueue();
 </script>
-
 </body>
 </html>
