@@ -158,13 +158,17 @@ $('todayDate').textContent = d.toDateString();
 
 /* --- NAVIGATION --- */
 document.querySelectorAll('.menu button').forEach(b=>{
-b.onclick = ()=>{
-document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
-document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
-b.classList.add('active');
-document.getElementById(b.dataset.section+'Section').classList.remove('hidden');
-}
+  b.onclick = ()=>{
+    document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.section+'Section').classList.remove('hidden');
+
+    // Only refresh inventory table when opening Inventory section
+    if(b.dataset.section === 'inventory') renderInventory();
+  }
 });
+
 
 /* --- ATTENDANCE AUTOMATIC FOR MULTIPLE SITES --- */
 /* --- ATTENDANCE AUTOMATIC --- */
@@ -310,6 +314,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
