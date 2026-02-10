@@ -36,6 +36,26 @@ table{width:100%;border-collapse:collapse;}
 th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
 input, select{padding:8px;border-radius:6px;border:none;}
 @media(max-width:900px){main{grid-template-columns:1fr}.cards{flex-direction:column;}}
+.clock-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.back-btn{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+  color:#02122a;
+  font-size:13px;
+}
+
+.back-btn:hover{
+  filter:brightness(1.15);
+}
 </style>
 </head>
 <body>
@@ -49,7 +69,10 @@ input, select{padding:8px;border-radius:6px;border:none;}
 <p class="sub">Employee Dashboard</p>
 </div>
 </div>
-<div class="clock" id="datetime"></div>
+<div class="clock-wrap">
+  <div class="clock" id="datetime"></div>
+  <button class="back-btn" onclick="history.back()">⬅ Back</button>
+</div>
 </header>
 
 <main>
@@ -327,6 +350,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
