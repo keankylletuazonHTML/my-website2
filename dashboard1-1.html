@@ -223,24 +223,35 @@ renderTransactions();
 }
 renderTransactions();
 
-/* --- INVENTORY LOG --- */
+/* ===== INVENTORY LOG ===== */
 function getInventory(){
-  return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
+    return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
 }
 
 function renderInventory(){
-  const inv = getInventory();
-  $('invTable').innerHTML = inv.map(x=>`
-    <tr>
-      <td>${x.date}</td>
-      <td>${x.item}</td>
-      <td>${x.old}</td>
-      <td>${x.new}</td>
-      <td>${x.total}</td>
-    </tr>
-  `).join('');
+    const inv = getInventory();
+    const tbody = document.getElementById('invTable');
+    tbody.innerHTML = "";
+    inv.forEach(l=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${l.date}</td>
+            <td>${l.item}</td>
+            <td>${l.old}</td>
+            <td>${l.new}</td>
+            <td>${l.total}</td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
+window.addEventListener('storage', function(event){
+    if(event.key === 'inventoryLog'){
+        renderInventory();
+    }
+});
+
+// Initial render
 renderInventory();
 
   
@@ -314,6 +325,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
