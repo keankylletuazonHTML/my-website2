@@ -513,36 +513,40 @@ function saveInventoryChanges(){
     const newName = document.getElementById("newProductName").value;
     const newPrice = Number(document.getElementById("newProductPrice").value);
 
-    let inventoryLog = JSON.parse(localStorage.getItem('inventoryLog') || '[]');
+    const inventoryLog = JSON.parse(localStorage.getItem('inventoryLog') || "[]");
     const now = new Date();
 
+    // UPDATE EXISTING ITEM
     const item = items.find(i => i.code === selectedCode);
     if(item){
         const oldStock = item.stock;
         if(!isNaN(stock)) item.stock += stock;
         if(!isNaN(price) && price>0) item.price = price;
 
-        // Log the stock/price change
-        inventoryLog.push({
-            date: now.toLocaleDateString(),
-            item: item.name,
-            old: oldStock,
-            new: stock || 0,
-            total: item.stock
-        });
+        if(!isNaN(stock) && stock > 0){
+            inventoryLog.push({
+                date: now.toLocaleDateString(),
+                item: item.name,
+                old: oldStock,
+                new: stock,
+                total: item.stock  // Correct total stock
+            });
+        }
     }
 
+    // ADD NEW ITEM
     if(newName && !isNaN(newPrice) && newPrice>0){
-        const newCode = 'A' + (items.length+1);
-        items.push({code:newCode,name:newName,price:newPrice,stock:0});
+        const newCode = 'A' + (items.length + 1);
+        const newStock = isNaN(stock) ? 0 : stock; // optional: allow initial stock
+        items.push({code:newCode, name:newName, price:newPrice, stock:newStock});
 
-        // Log new product
+        // Log the creation correctly using STOCK, not price
         inventoryLog.push({
             date: now.toLocaleDateString(),
             item: newName,
             old: 0,
-            new: newPrice,
-            total: 0
+            new: newStock,    // This is the actual stock added
+            total: newStock   // Total stock
         });
     }
 
@@ -551,11 +555,14 @@ function saveInventoryChanges(){
     renderItems();
     closeInventory();
     alert("Inventory updated!");
+
+    // Clear inputs
     document.getElementById("stockInput").value="";
     document.getElementById("priceInput").value="";
     document.getElementById("newProductName").value="";
     document.getElementById("newProductPrice").value="";
 }
+
 
 /* ===== INVENTORY SELECT POPULATION ===== */
 function populateInventorySelect(){
@@ -580,3 +587,4 @@ window.addEventListener('storage', (e)=>{
 </script>
 </body>
 </html>
+
