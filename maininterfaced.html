@@ -429,8 +429,8 @@ document.getElementById("clearQueueBtn").onclick=()=>{
 }
 
 /* ===== CONFIRM SALE ===== */
-document.getElementById("confirmOrdersBtn").onclick=()=>{
-    if(queue.length===0){alert("Queue is empty!"); return;}
+document.getElementById("confirmOrdersBtn").onclick = () => {
+    if(queue.length === 0){ alert("Queue is empty!"); return; }
     const payment = Number(document.getElementById("paymentInput").value);
     const total = queueTotal();
     if(payment < total){ alert("Insufficient payment!"); return; }
@@ -441,26 +441,33 @@ document.getElementById("confirmOrdersBtn").onclick=()=>{
     // Update stock & create inventory log
     const inventoryLog = JSON.parse(localStorage.getItem(INVENTORY_LOG_KEY) || "[]");
     const now = new Date();
-    queue.forEach(order=>{
-        const it = items.find(i=>i.code===order.code);
+
+    queue.forEach(order => {
+        const it = items.find(i => i.code === order.code);
         const oldStock = it.stock;
-        it.stock -= order.qty;
-        // Push log
+        const soldQty = order.qty;
+
+        it.stock -= soldQty; // reduce stock after sale
+
+        // Push log with Sold column
         inventoryLog.push({
             date: now.toLocaleDateString(),
             item: it.name,
             old: oldStock,
-            new: order.qty,
+            sold: soldQty, 
+            new: it.stock,
             total: it.stock
         });
     });
+
     saveInventoryLog(inventoryLog);
     saveItems();
 
-    queue=[]; saveQueue(); renderQueue();
-    document.getElementById("paymentInput").value=""; updateChange();
+    queue = []; saveQueue(); renderQueue();
+    document.getElementById("paymentInput").value = ""; updateChange();
     alert("Sale recorded!");
-}
+};
+
 
 /* ===== SEND TO DASHBOARD ===== */
 function sendToDashboard(queue, totalAmount){
@@ -587,4 +594,5 @@ window.addEventListener('storage', (e)=>{
 </script>
 </body>
 </html>
+
 
