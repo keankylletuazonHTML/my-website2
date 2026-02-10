@@ -66,6 +66,7 @@ input, select{padding:8px;border-radius:6px;border:none;}
 <button data-section="attendance">Attendance</button>
 <button data-section="transactions">Transaction History</button>
 <button data-section="income">Income Report</button>
+<button data-section="inventory">Inventory</button>
 </nav>
 </aside>
 
@@ -105,6 +106,34 @@ input, select{padding:8px;border-radius:6px;border:none;}
 </table>
 </div>
 </div>
+
+<!-- INVENTORY -->
+<div id="inventorySection" class="section hidden">
+  <div class="panel">
+    <h2>Inventory</h2>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <input id="invItem" placeholder="Item / Description">
+      <input id="invOld" type="number" placeholder="Old Stock">
+      <input id="invNew" type="number" placeholder="New Stock">
+      <button class="btn" onclick="addInventory()">Add Record</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Item / Description</th>
+          <th>Old Stock</th>
+          <th>New Stock</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="invTable"></tbody>
+    </table>
+  </div>
+</div>
+
 
 <!-- INCOME -->
 <div id="incomeSection" class="section hidden">
@@ -197,6 +226,61 @@ renderTransactions();
 }
 renderTransactions();
 
+/* --- INVENTORY LOG --- */
+function getInventory(){
+  return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
+}
+
+function saveInventory(data){
+  localStorage.setItem('inventoryLog', JSON.stringify(data));
+}
+
+function renderInventory(){
+  const inv = getInventory();
+  $('invTable').innerHTML = inv.map(x=>`
+    <tr>
+      <td>${x.date}</td>
+      <td>${x.item}</td>
+      <td>${x.old}</td>
+      <td>${x.new}</td>
+      <td>${x.total}</td>
+    </tr>
+  `).join('');
+}
+
+function addInventory(){
+  const item = $('invItem').value.trim();
+  const oldStock = parseInt($('invOld').value);
+  const newStock = parseInt($('invNew').value);
+
+  if(!item || isNaN(oldStock) || isNaN(newStock)){
+    alert("Complete all inventory fields");
+    return;
+  }
+
+  const total = oldStock + newStock;
+  const record = {
+    date: new Date().toLocaleDateString(),
+    item,
+    old: oldStock,
+    new: newStock,
+    total
+  };
+
+  const inv = getInventory();
+  inv.push(record);
+  saveInventory(inv);
+
+  $('invItem').value='';
+  $('invOld').value='';
+  $('invNew').value='';
+
+  renderInventory();
+}
+
+renderInventory();
+
+  
 /* --- INCOME --- */
 function calcIncome(){
 const t = JSON.parse(localStorage.getItem('trans')||'[]');
@@ -267,5 +351,6 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
