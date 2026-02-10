@@ -112,13 +112,6 @@ input, select{padding:8px;border-radius:6px;border:none;}
   <div class="panel">
     <h2>Inventory</h2>
 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-      <input id="invItem" placeholder="Item / Description">
-      <input id="invOld" type="number" placeholder="Old Stock">
-      <input id="invNew" type="number" placeholder="New Stock">
-      <button class="btn" onclick="addInventory()">Add Record</button>
-    </div>
-
     <table>
       <thead>
         <tr>
@@ -231,8 +224,8 @@ function getInventory(){
   return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
 }
 
-function saveInventory(data){
-  localStorage.setItem('inventoryLog', JSON.stringify(data));
+function getInventory(){
+  return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
 }
 
 function renderInventory(){
@@ -246,36 +239,6 @@ function renderInventory(){
       <td>${x.total}</td>
     </tr>
   `).join('');
-}
-
-function addInventory(){
-  const item = $('invItem').value.trim();
-  const oldStock = parseInt($('invOld').value);
-  const newStock = parseInt($('invNew').value);
-
-  if(!item || isNaN(oldStock) || isNaN(newStock)){
-    alert("Complete all inventory fields");
-    return;
-  }
-
-  const total = oldStock + newStock;
-  const record = {
-    date: new Date().toLocaleDateString(),
-    item,
-    old: oldStock,
-    new: newStock,
-    total
-  };
-
-  const inv = getInventory();
-  inv.push(record);
-  saveInventory(inv);
-
-  $('invItem').value='';
-  $('invOld').value='';
-  $('invNew').value='';
-
-  renderInventory();
 }
 
 renderInventory();
@@ -351,6 +314,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
