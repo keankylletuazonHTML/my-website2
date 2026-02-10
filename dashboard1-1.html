@@ -229,21 +229,23 @@ function getInventory(){
 }
 
 function renderInventory(){
-    const inv = getInventory();
+    const inv = JSON.parse(localStorage.getItem('inventoryLog') || '[]');
     const tbody = document.getElementById('invTable');
     tbody.innerHTML = "";
-    inv.forEach(l=>{
+    inv.forEach(l => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${l.date}</td>
             <td>${l.item}</td>
             <td>${l.old}</td>
+            <td>${l.sold || 0}</td>     <!-- show sold -->
             <td>${l.new}</td>
             <td>${l.total}</td>
         `;
         tbody.appendChild(tr);
     });
 }
+
 
 window.addEventListener('storage', function(event){
     if(event.key === 'inventoryLog'){
@@ -325,6 +327,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
