@@ -448,20 +448,24 @@ document.getElementById("confirmOrdersBtn").onclick=()=>{
     alert("Sale recorded!");
 }
 
-/* ===== INVENTORY LOGGING ===== */
-function logInventory(itemName, oldStock, change){
-    let logs = JSON.parse(localStorage.getItem("inventory_log") || "[]");
-    const now = new Date();
-    logs.push({
-        time: now.toLocaleTimeString(),
-        date: now.toLocaleDateString(),
-        item: itemName,
-        oldStock: oldStock,
-        change: change,
-        cashier: cashierName
+/* ===== UPDATE INVENTORY LOG ===== */
+let inventoryLog = JSON.parse(localStorage.getItem("inventoryLog") || "[]");
+
+queue.forEach(order => {
+    const item = items.find(i => i.code === order.code);
+    const oldStock = item.stock;
+    item.stock -= order.qty;
+
+    inventoryLog.push({
+        date: new Date().toLocaleDateString(),
+        item: item.name,
+        old: oldStock,
+        new: item.stock,
+        total: item.stock
     });
-    localStorage.setItem("inventory_log", JSON.stringify(logs));
-}
+});
+
+localStorage.setItem("inventoryLog", JSON.stringify(inventoryLog));
 
 /* ===== SEND TO DASHBOARD ===== */
 function sendToDashboard(queue, totalAmount){
@@ -565,3 +569,4 @@ closeTutorial(); // Optional: hide tutorial on load if needed
 </script>
 </body>
 </html>
+
