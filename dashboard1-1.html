@@ -224,10 +224,6 @@ function getInventory(){
   return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
 }
 
-function getInventory(){
-  return JSON.parse(localStorage.getItem('inventoryLog') || '[]');
-}
-
 function renderInventory(){
   const inv = getInventory();
   $('invTable').innerHTML = inv.map(x=>`
@@ -314,6 +310,7 @@ window.addEventListener('storage', function(event){
 
 </body>
 </html>
+
 
 
 
